@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+<!--     <item android:state_pressed="true" android:drawable="@drawable/search_menu_active_bg"/>
+    <item android:state_focused="true" android:drawable="@drawable/search_menu_active_bg"/>
+    <item android:state_selected="true" android:drawable="@drawable/search_menu_active_bg"/>
+    <item android:state_selected="false" android:drawable="@drawable/search_menu_bg"/>
+    <item android:state_pressed="false" android:drawable="@drawable/search_menu_bg"/>
+    <item android:state_focused="false" android:drawable="@drawable/search_menu_bg"/> -->
+    
+    <item android:state_pressed="true" android:drawable="@drawable/gallary_arrow_right_active"/>
+    <item android:state_focused="true" android:drawable="@drawable/gallary_arrow_right_active"/>
+    <item android:state_selected="true" android:drawable="@drawable/gallary_arrow_right_active"/>
+    <item android:state_hovered="true" android:drawable="@drawable/gallary_arrow_right_hover"/>
+    <item android:state_selected="false" android:drawable="@drawable/gallary_arrow_right"/>
+    <item android:state_pressed="false" android:drawable="@drawable/gallary_arrow_right"/>
+    <item android:state_focused="false" android:drawable="@drawable/gallary_arrow_right"/>
+	<item android:state_hovered="false" android:drawable="@drawable/gallary_arrow_right"/>
+</selector>

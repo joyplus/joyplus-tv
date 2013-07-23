@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#08111a"
+    android:orientation="vertical">
+	<include layout="@layout/show_head"
+		    android:layout_width="fill_parent"
+		    android:layout_height="65dp"
+	        android:layout_marginLeft="30dp"
+		    />
+	<LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="horizontal">
+	    <LinearLayout android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1">
+	    </LinearLayout>
+	    <LinearLayout android:layout_width="0dp"
+	        android:layout_height="fill_parent" 
+	        android:orientation="vertical"
+	        android:layout_weight="5">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="1">
+	            <TextView android:layout_width="fill_parent"
+		        android:paddingLeft="15dp"
+			    android:layout_height="wrap_content"
+			    android:gravity="center_vertical"
+			    android:textSize="30dp"
+			    android:layout_gravity="bottom"
+			    android:text="关于我们"
+			    android:textColor="@color/common_title_selected"
+			    android:background="@drawable/menubg"/>
+	        </LinearLayout>
+	        
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:orientation="horizontal"
+	            android:layout_weight="5">
+	            <LinearLayout android:layout_width="0dp"
+	                android:layout_height="fill_parent"
+	                android:orientation="vertical"
+	                android:paddingLeft="25dp"
+	                android:layout_weight="4">
+	                <TextView android:layout_width="fill_parent"
+	                    android:layout_height="fill_parent"
+	                    android:textColor="@color/hot_content_notice"
+	                    android:textSize="18dp"
+	                    android:lineSpacingExtra="3dp"
+	                    android:text="@string/setting_about"/>
+		        </LinearLayout>
+		        <LinearLayout android:layout_width="0dp"
+		            android:layout_height="fill_parent"
+		            android:orientation="vertical"
+		            android:paddingTop="20dp"
+		            android:paddingLeft="15dp"
+		            android:paddingRight="30dp"
+		            android:gravity="center_horizontal"
+		            android:layout_weight="1">
+		        </LinearLayout>
+	       </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+</FrameLayout>

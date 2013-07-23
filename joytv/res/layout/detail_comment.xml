@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/movie_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginLeft="30dp"
+        layout="@layout/show_head" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:paddingLeft="50dp" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="33dp"
+                android:paddingRight="8dp" >
+
+                <include
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="6.623"
+                    layout="@layout/show_pic_rating_item" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_zero"
+                    android:layout_weight="7.23" >
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/layout_zero"
+                android:layout_height="match_parent"
+                android:layout_weight="5" >
+
+                <RelativeLayout
+                    android:layout_width="@dimen/layout_zero"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="vertical"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp" >
+
+                    <TextView
+                        android:id="@+id/textView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="西游降魔篇"
+                        android:textColor="@color/menu_bg_select_ok"
+                        android:textSize="25dp" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/textView1"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="22dp"
+                        android:layout_toRightOf="@+id/textView1"
+                        android:text="的影评"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                    <ListView
+                        android:id="@+id/listView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView1"
+                        android:cacheColorHint="@android:color/transparent"
+                        android:divider="#4D2A08"
+                        android:dividerHeight="1dp"
+                        android:listSelector="@drawable/comment_list_selector" >
+                    </ListView>
+
+                    <!-- <TextView -->
+                    <!-- android:id="@+id/textView3" -->
+                    <!-- android:layout_width="wrap_content" -->
+                    <!-- android:layout_height="wrap_content" -->
+                    <!-- android:layout_alignParentRight="true" -->
+                    <!-- android:layout_alignParentTop="true" -->
+                    <!-- android:text="1/8" -->
+                    <!-- android:textColor="@color/text_normal" -->
+                    <!-- android:textSize="16sp" -->
+                    <!-- android:visibility="gone" /> -->
+
+                    <ScrollView
+                        android:id="@+id/scrollViewItemDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView1"
+                        android:visibility="invisible" 
+                        android:scrollbars="@null">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="4dp"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/listViewItemTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="18dp"
+                                android:lineSpacingExtra="5dp"
+                                android:textColor="@color/white"
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/textViewItemDetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="48dp"
+                                android:lineSpacingExtra="5dp"
+                                android:textSize="20dp" />
+                        </LinearLayout>
+                    </ScrollView>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+ >
+
+	<ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="172dp"
+        android:layout_alignParentLeft="true"
+      	android:layout_alignParentTop="true"
+      	 android:background="@drawable/list_line" 
+      	 android:visibility="invisible"
+      	/>
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="9f9f9f"
+        android:lineSpacingExtra = "5dp"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_alignLeft="@+id/TextView01"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:text="9f9f9f"
+        android:lineSpacingExtra = "5dp"
+        android:textColor="@color/text_normal"
+        android:textSize="20dp" />
+
+</RelativeLayout>

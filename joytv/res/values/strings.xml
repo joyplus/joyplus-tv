@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="version_code">1.2.3</string>
+    <string name="version_name">9</string>
+
+    <string name="app_name">悦视频</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="netstate">网络状态</string>
+      <string name=" networknotwork">哎呀，你的网络好像有问题，请重试！</string>
+       <string name=" ok">退出</string>
+    <string name="  cancel">取消</string>
+      
+      <string name="init_decoders">正在进行第一次解压解码包...</string>
+     <string name="VideoView_error_title">Cannot play video</string>
+      <string name=" addressnotwork">播放的地址失效！</string>
+    <string name="VideoView_error_text_invalid_progressive_playback">播放的地址失效！</string>
+    <string name="VideoView_error_text_unknown">Sorry, this video cannot be played.</string>
+    <string name="VideoView_error_button">OK</string>
+    <string name="mediacontroller_play_pause">Play/Pause</string>
+    
+    <!--Yangzhg  -->
+    <string name="hello_world">Hello world!</string>
+    <string name="tv_play_name">电视剧</string>
+    <string name="shoucang_update_name">收藏更新</string>
+    <string name="oumei_play_name">美剧</string>
+    <string name="dalu_play_name">大陆剧</string>
+    <string name="gangju_play_name">港剧</string>
+    <string name="taiju_play_name">台剧</string>
+    <string name="hanju_play_name">韩剧</string>
+    <string name="riju_play_name">日剧</string>
+    <string name="dongman_play_name">动漫</string>
+    <string name="qinzidongman_play_name">亲子动漫</string>
+    <string name="rexuedongman_play_name">热血动漫</string>
+    <string name="hougongdoangman_play_name">校园动漫</string>
+    <string name="tuilidongman_play_name">推理动漫</string>
+    <string name="jizhandongman_play_name">机战动漫</string>
+    <string name="gaoxiaodongman_play_name">搞笑动漫</string>
+    <string name="search_name">搜索</string>
+    <string name="yuedan_name">悦单</string>
+    <string name="dianyingyuedan_name">电影悦单</string>
+    <string name="dianshijuyuedan_name">电视剧悦单</string>
+    <string name="qitadianshiju_play_name">其他</string>
+    <string name="dianying_name">电影</string>
+    <string name="quanbufenlei_name">全部分类</string>
+    <string name="dongzuopian_name">动作片</string>
+    <string name="kehuanpian_name">科幻片</string>
+    <string name="lunlipian_pian">伦理片</string>
+    <string name="xijupian_name">喜剧片</string>
+    <string name="aiqingpian_name">爱情片</string>
+    <string name="xuanyipian_name">悬疑片</string>
+    <string name="kongbupian_name">恐怖片</string>
+    <string name="donghuapian_name">动画片</string>
+    <string name="qitadongman_play_name">其他</string>
+    <string name="zuijinguankan_name">最近观看</string>
+    <string name="zhuijushoucang_name">追剧收藏</string>
+    <string name="lixianshipin_name">离线视频</string>
+    <string name="zongyi_name">综艺</string>
+    <string name="qitazongyi_name">其他</string>
+    <string name="xiangqing_daoyan_name">导演:&#160;</string>
+    <string name="xiangqing_zhuyan_name">主演:&#160;</string>
+    <string name="xiangqing_juqingjianjie_name">剧情简介:&#160;</string>
+    <string name="time_yuezai_name">约在</string>
+    <string name="time_kanwan_name">看完</string>
+    <string name="time_time_name">15:08</string>
+    <string name="xiangqing_fenshu_value">7.3</string>
+    <string name="xiangqing_bofang">播放</string>
+    <string name="xiangqing_gaoqing">高清</string>
+    <string name="xiangqing_xiazai">下载</string>
+    <string name="xiangqing_yingping">影评</string>
+    <string name="xiangqing_tujiandianying">推 荐 电 影</string>
+    <string name="gaoqing_gaoqing">高清版</string>
+    <string name="gaoqing_chaogaoqing">超清版</string>
+    <string name="gaoqing_biaoqing">标清版</string>
+    <string name="yingpianshu">部影片</string>
+    <string name="zongyi_gengxinzhi">更新至第</string>
+    <string name="dianshiju_jiquan">集全</string>
+    <string name="quanbu_name">全部</string>
+    <string name="xiangqing_zongyi_zhuchi">主持/嘉宾:&#160;</string>
+    <string name="xiangqing_zongyi_shoubo">电视台:&#160;</string>
+    <string name="xiangqing_zongyi_jianjie">简介:&#160;</string>
+    <string name="xiangqing_yingping_no">没有影评</string>
+    <string name="movie_fenzhong">分钟</string>
+    <string name="toast_no_play">哎呦，找不到影片</string>
+    <string name="toast_no_network">请检查网络设置</string>
+    <string name="toast_no_retry">重试</string>
+    <string name="toast_no_exit">退出悦视频</string>
+    <string name="toast_setting_wifi">网络设置</string>
+    <string name="toast_network_slow">网络速度像蜗牛</string>
+    
+    <string name="dialog_unband">是否取消与悦视频手机版的绑定？</string>
+    <string name="dialog_unband_yes">是</string>
+    <string name="dialog_unband_no">否</string>
+    
+    <string name="search_hint">请输入首字母搜索</string>
+    
+    <string name="before_num_text">共</string>
+    <string name="after_num_text">部</string>
+    
+    <string name="group_series_tv_dongman">全系列</string>
+    
+    <string name="personal_record">个人中心</string><!-- 我的悦视频 -->
+    <string name="play_store">片库</string><!-- 悦片库 -->
+    
+    <!--Yangzhg  -->
+    
+    
+    <!--ZhangQibo  -->
+    <!-- main -->
+    <string name="yuedan_notice_num">等%1$s部影片</string>
+    <!--ZhangQibo  -->
+    <string name="setting_about">\n\n\n志精科技洞察消费者视频娱乐消费习惯变革的趋势，致力于成为家庭娱乐分享的引擎。
+        \n\n使命：分享生活和爱的乐趣
+        \n\n愿景：成为家庭娱乐分享引擎
+        \n\n宗旨：
+        \n\n嫁接起移动屏幕和大屏幕的娱乐应用桥梁；
+        \n体验极富乐趣的家庭互动娱乐生活；
+        \n实现多屏合一智能化高效监播体系
+        \n\n企业文化：
+        \n\n先行与恒持——行业先导与使命必达
+        \n分享与共荣——高效沟通与利益共享
+        \n激情与守信——阳光心境与信誉为先
+        \n\n口号：Enjoy sharing life</string>
+    <string name="setting_declaration">
+		\n\n\n\t任何用户在使用本客户端服务之前，均应仔细阅读本声明（未成年人应当在其法定监护人陪同下阅读），用户可以选择不使用本客户端服务，一旦使用，既被视为对本声明全部内容的认可和接受。
+		\n\n\t1、	任何通过本客户端显示或下载的资源和产品均系聚合引擎技术自动搜录第三方网站所有者制作或提供的内容，本客户端中的所有材料、信息和产品仅按“原样”提供，我公司对其合法性、准确性、真实性、适用性、安全性等概不负责，也无法负责；并且本客户端自动搜录的内容不代表我公司之任何意见和主张，也不代表我公司同意或支持第三方网站上的任何内容、主张或立场。
+		\n\n\t2、	任何第三方网站如果不希望被我公司的聚合引擎技术收录，应该及时向我公司反映。否则，我公司的聚合引擎技术将视其为可收录的资源网站。
+		\n\n\t3、	任何单位或者个人如认为本客户端聚合引擎技术收录的第三方网站视频内容可能侵犯了其合法权益，请及时向我公司书面反馈，并提供身份证明、权属证明以及详情侵权情况证明。我公司在收到上述文件后，可依其合理判断，断开聚合引擎技术收录的涉嫌侵权的第三方网站内容。
+		\n\n\t4、	用户理解并且同意，用户通过本客户端所获得的材料、信息、产品以及服务完全处于用户自己的判断，并承担因使用该等内容而引起的所有风险，包括但不限于因对内容的正确性、完整性或实用性的依赖而产生的风险。用户在使用本客户端的过程中，因受视频或相关内容误导或欺骗而导致或可能导致的任何心理、生理上的伤害以及经济上的损失，一概与本公司无关。
+		\n\n\t5、	用户因第三方如电信部门的通讯线路故障、技术问题、网络、电脑故障、系统不稳定性及其他各种不可抗力量原因而遭受到的一切损失，我公司不承担责任。因技术故障等不可抗时间影响到服务的正常运行的，我公司承诺在第一时间内与相关单位配合，及时处理进行修复，但用户因此而遭受的一切损失，我公司不承担责任。
+</string> 
+    <string name="setting_declaration2">
+		\n\t任何用户在使用本客户端服务之前，均应仔细阅读本声明（未成年人应当在其法定监护人陪同下阅读），用户可以选择不使用本客户端服务，一旦使用，既被视为对本声明全部内容的认可和接受。
+		\n\n\t1、	任何通过本客户端显示或下载的资源和产品均系聚合引擎技术自动搜录第三方网站所有者制作或提供的内容，本客户端中的所有材料、信息和产品仅按“原样”提供，我公司对其合法性、准确性、真实性、适用性、安全性等概不负责，也无法负责；并且本客户端自动搜录的内容不代表我公司之任何意见和主张，也不代表我公司同意或支持第三方网站上的任何内容、主张或立场。
+		\n\n\t2、	任何第三方网站如果不希望被我公司的聚合引擎技术收录，应该及时向我公司反映。否则，我公司的聚合引擎技术将视其为可收录的资源网站。
+		\n\n\t3、	任何单位或者个人如认为本客户端聚合引擎技术收录的第三方网站视频内容可能侵犯了其合法权益，请及时向我公司书面反馈，并提供身份证明、权属证明以及详情侵权情况证明。我公司在收到上述文件后，可依其合理判断，断开聚合引擎技术收录的涉嫌侵权的第三方网站内容。
+		\n\n\t4、	用户理解并且同意，用户通过本客户端所获得的材料、信息、产品以及服务完全处于用户自己的判断，并承担因使用该等内容而引起的所有风险，包括但不限于因对内容的正确性、完整性或实用性的依赖而产生的风险。用户在使用本客户端的过程中，因受视频或相关内容误导或欺骗而导致或可能导致的任何心理、生理上的伤害以及经济上的损失，一概与本公司无关。
+		\n\n\t5、	用户因第三方如电信部门的通讯线路故障、技术问题、网络、电脑故障、系统不稳定性及其他各种不可抗力量原因而遭受到的一切损失，我公司不承担责任。因技术故障等不可抗时间影响到服务的正常运行的，我公司承诺在第一时间内与相关单位配合，及时处理进行修复，但用户因此而遭受的一切损失，我公司不承担责任。
+</string>      	
+    <string name="history_title">最近观看</string>
+    <string-array name="navigator_area">
+        <item >全部</item>
+        <item >台湾</item>
+        <item >韩国</item>
+        <item >美国</item>
+        <item >日本</item>
+        <item >欧洲</item>
+        <item >东南亚</item>
+        <item >其他</item>
+    </string-array>
+    
+    <string-array name="navigator_classification">
+        <item >全部</item>
+        <item >恐怖</item>
+        <item >惊悚</item>
+        <item >悬疑</item>
+        <item >伦理</item>
+        <item >爱情</item>
+        <item >喜剧</item>
+        <item >科幻</item>
+        <item >动作</item>
+        <item >其他</item>
+    </string-array>
+    <string-array name="navigator_year">
+        <item >全部</item>
+        <item >2013</item>
+        <item >2012</item>
+        <item >2011</item>
+        <item >2010</item>
+        <item >2009</item>
+        <item >2008</item>
+        <item >2007</item>
+        <item >2006</item>
+        <item >2005</item>
+        <item >2004</item>
+        <item >2003</item>
+        <item >2002</item>
+        <item >2001</item>
+        <item >其他</item>
+    </string-array>
+    
+    <!--Yu  -->
+       <!-- Movie View Resume Playing dialog title -->
+    <string name="resume_playing_title">播放选项</string>
+
+    <!-- Movie View Start Playing dialog title -->
+    <string name="resume_playing_message">你想继续播放吗？ </string>
+
+    <!-- Movie View Start Playing button "Resume from bookmark" -->
+    <string name="resume_playing_resume">继续</string>
+
+    <!-- Movie View Start Playing button "Beginning" -->
+    <string name="resume_playing_restart">重新开始</string>
+    <!--Yu  -->
+</resources>

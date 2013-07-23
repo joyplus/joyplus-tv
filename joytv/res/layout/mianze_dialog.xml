@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#fbfbfbfb"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#262D38"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="免    责   声    明"
+        android:textColor="#e4e4e4"
+        android:textSize="24dp" />
+
+    <ScrollView
+        android:id="@+id/sv"
+        android:layout_width="840dp"
+        android:layout_height="450dp"
+        android:layout_below="@id/tv_title"
+        android:layout_weight="1"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_declaration2"
+            android:textColor="@color/black"
+            android:textSize="24dp" />
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:background="#262D38"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btnyes"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_button_receive_selector"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="接   受"
+            android:textSize="20dip" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_head_user"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:orientation="horizontal"
+    android:paddingTop="25dp"
+    android:paddingRight="30dp" >
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/iv_head_user_icon"
+                style="@style/style_1"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+               	android:scaleType="fitXY"
+                android:background="@drawable/avatar_defult" />
+
+            <TextView
+                android:id="@+id/tv_head_user_name"
+                style="@style/style_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:paddingLeft="5dp"
+                android:layout_weight="5"
+                android:text="用户名称"
+                android:textColor="@color/user_name"
+                android:textSize="@dimen/user_name_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/layout_zero"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <com.joyplus.tv.ui.ClockTextView
+            android:id="@+id/cv_head_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/time_color"
+            android:textSize="@dimen/time_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal" >
+
+<!--         <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:text="测试版本"
+            android:visibility="visible"/> -->
+        
+        <ImageView
+            android:id="@+id/iv_head_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/logo_custom" />
+    </LinearLayout>
+
+</LinearLayout>

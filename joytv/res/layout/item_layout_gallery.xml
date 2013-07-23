@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        <ImageView android:layout_width="fill_parent"
+	       android:layout_height="fill_parent"
+	       android:scaleType="fitXY"
+	       android:id="@+id/image"
+	       android:background="@drawable/post_normal"/>
+        <ImageView android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignParentRight="true"
+	        android:id="@+id/definition"
+	        android:src="@drawable/icon_bd"/>
+        <LinearLayout android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:paddingLeft="8dp"
+		    android:paddingRight="8dp"
+		    android:layout_alignBottom="@id/image"
+		    android:id="@+id/bottom_frame"
+		    android:background="@drawable/bg_gallery_fram">
+		    <TextView android:layout_width="fill_parent"
+		        android:layout_height="25dp"
+		        android:singleLine="true"
+		        android:textColor="@color/hot_content_notice"
+		        android:id="@+id/second_title"
+		        android:textSize="20dp"/>
+		    <LinearLayout android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal">
+		        <TextView android:layout_width="0dp"
+		            android:layout_height="20dp"
+		            android:layout_weight="1"
+		            android:textColor="@color/hot_content_content"
+		        	android:id="@+id/content"
+		            android:textSize="15dp"
+		            android:text="第二季  第17集"/>
+		        <TextView android:layout_width="25dp"
+		            android:layout_height="20dp"
+		            android:textColor="@color/hot_content_notice"
+		        	android:id="@+id/score"
+		        	android:gravity="right"
+		            android:textSize="15dp"/>
+		    </LinearLayout>
+		</LinearLayout>
+<!-- 		<LinearLayout android:layout_width="fill_parent" -->
+<!-- 		    android:layout_height="fill_parent" -->
+<!-- 		    android:id="@+id/play_icon_layout" -->
+<!-- 		    android:visibility="invisible" -->
+<!-- 		    android:gravity="center"> -->
+<!-- 		    <ImageView android:layout_width="wrap_content" -->
+<!-- 		    android:layout_height="wrap_content" -->
+<!-- 		    android:src="@drawable/play"/> -->
+<!-- 		</LinearLayout> -->
+
+		<TextView
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_above="@id/bottom_frame"
+		    android:layout_alignParentLeft="true"
+		    android:background="@drawable/bg_gallery_fram_1"
+		    android:paddingLeft="8dp"
+		    android:paddingRight="8dp"
+		    android:singleLine="true"
+		    android:text="上次观看"
+		    android:id="@+id/first_title"
+		    android:visibility="gone"
+		    android:textColor="@color/clock_green"
+		    android:textSize="18dp" />
+
+    </RelativeLayout>
+    <ImageView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/reflact_bottom"
+            android:background="@drawable/reflact"/>
+</LinearLayout>

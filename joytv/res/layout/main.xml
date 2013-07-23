@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#08111a" >
+
+    <RelativeLayout
+        android:id="@+id/adsdkContentFake"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/root_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            layout="@layout/show_head" />
+
+        <TextView
+            android:id="@+id/notice_text"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="212dp"
+            android:layout_marginRight="143dp"
+            android:layout_marginTop="105dp"
+            android:background="@drawable/menubg"
+            android:gravity="center_vertical|right"
+            android:paddingRight="35dp"
+            android:textColor="@color/common_title_selected"
+            android:textSize="18dp" />
+
+        <com.joyplus.tv.ui.MyScrollLayout
+            android:id="@+id/group"
+            android:layout_width="fill_parent"
+            android:layout_height="135dp"
+            android:layout_marginLeft="166dp"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/tv_personal_record"
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="14dp"
+                android:text="@string/personal_record"
+                android:textColor="@color/common_title_unselected"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/tv_play_store"
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="14dp"
+                android:text="@string/play_store"
+                android:textColor="@color/common_title_unselected"
+                android:textSize="30dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="14dp"
+                android:text="悦单"
+                android:textColor="@color/common_title_unselected"
+                android:textSize="30dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="14dp"
+                android:text="热播"
+                android:textColor="@color/common_title_unselected"
+                android:textSize="30dp" />
+        </com.joyplus.tv.ui.MyScrollLayout>
+        <!-- <ImageView android:layout_width="fill_parent" -->
+        <!-- android:layout_height="5dp" -->
+        <!-- android:layout_marginTop="10dp" -->
+        <!-- android:layout_below="@id/group" -->
+        <!-- android:src="@drawable/line"/> -->
+        <!-- <LinearLayout android:layout_width="fill_parent" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:orientation="horizontal" -->
+        <!-- android:layout_below="@id/group" -->
+        <!-- android:layout_marginTop="5dp" -->
+        <!-- android:id="@+id/gallery_layout" -->
+        <!-- android:paddingLeft="2dp" -->
+        <!-- android:paddingRight="2dp"> -->
+        <!-- <ImageView android:layout_width="18dp" -->
+        <!-- android:layout_height="fill_parent" -->
+        <!-- android:src="@drawable/arrow_left"/> -->
+        <!-- <com.joyplus.tv.ui.CustomGallery android:layout_width="fill_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:spacing="1dp" -->
+        <!-- android:fadingEdge="@null" -->
+        <!-- android:id="@+id/gallery"/> -->
+        <!-- <ImageView android:layout_width="18dp" -->
+        <!-- android:layout_height="fill_parent" -->
+        <!-- android:src="@drawable/arrow_right"/> -->
+        <!-- </LinearLayout> -->
+
+        <FrameLayout
+            android:id="@+id/galleryFram"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/group"
+            android:layout_marginTop="5dp" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
+
+                    <ImageButton
+                        android:id="@+id/icon_arrow_left"
+                        android:layout_width="26dp"
+                        android:layout_height="fill_parent"
+                        android:background="@android:color/transparent"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:paddingBottom="20dp"
+                        android:paddingTop="3dp"
+                        android:src="@drawable/bg_button_arrow_left"
+                        android:visibility="invisible" />
+
+                    <com.joyplus.tv.ui.CustomGallery
+                        android:id="@+id/gallery"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fadingEdge="@null"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:spacing="1dp" />
+
+                    <ImageButton
+                        android:id="@+id/icon_arrow_right"
+                        android:layout_width="26dp"
+                        android:layout_height="fill_parent"
+                        android:background="@android:color/transparent"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:paddingBottom="20dp"
+                        android:paddingTop="3dp"
+                        android:src="@drawable/bg_button_arrow_right"
+                        android:visibility="invisible" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/itemFram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/group"
+            android:layout_alignTop="@id/galleryFram"
+            android:layout_below="@id/group"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_gallery_highlight"
+            android:padding="5dp" >
+
+            <ImageView
+                android:id="@+id/highlight_img_1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/post_active"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/highlight_img_2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/post_active"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/highlight_img_3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/post_active"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/highlight_img_4"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/post_active"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/play_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/play" />
+
+            <ImageView
+                android:id="@+id/icon_defination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/galleryFram"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_teat_repeat"
+            android:orientation="horizontal"
+            android:paddingTop="15dp" >
+
+            <!-- android:paddingLeft="221dp" -->
+
+            <RelativeLayout
+                android:id="@+id/adsdkContent"
+                android:layout_width="221dp"
+                android:layout_height="fill_parent"
+                android:layout_below="@id/galleryFram"
+                android:background="@android:color/transparent"
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/img_navagatorbar1"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_bar_highlight" />
+
+                <ImageView
+                    android:id="@+id/img_navagatorbar2"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_bar_highlight" />
+
+                <ImageView
+                    android:id="@+id/img_navagatorbar3"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_bar_highlight" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/contentlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="35dp" >
+
+                <!-- <include layout="@layout/layout_hot"/> -->
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/bt_up_scrolllayout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="88dp"
+        android:layout_marginTop="105dp"
+        android:background="@drawable/bg_button_up_scroll"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_vertical|right" />
+
+    <Button
+        android:id="@+id/bt_down_scrolllayout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="33dp"
+        android:layout_marginTop="105dp"
+        android:background="@drawable/bg_button_down_scroll"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_vertical|right" />
+
+    <ImageView
+        android:id="@+id/image_starting"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY" />
+    <!-- android:src="@drawable/starting" -->
+
+</RelativeLayout>

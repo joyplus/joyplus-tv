@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#08111a"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:layout_marginLeft="30dp"
+        layout="@layout/show_head" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/menubg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="15dp"
+                    android:text="设置"
+                    android:textColor="@color/common_title_selected"
+                    android:textSize="30dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="4"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/bandLayout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/user_avatar"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="15dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/avatar_defult" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:paddingLeft="15dp" >
+
+                            <TextView
+                                android:id="@+id/user_name"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/hot_content_notice"
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:id="@+id/user_notice"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/hot_content_notice"
+                                android:textSize="18dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line" />
+
+                    <TextView
+                        android:id="@+id/faq_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="常见问题"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="25dp" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line" />
+
+                    <TextView
+                        android:id="@+id/declaration_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="免责声明"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="25dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_about"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/about_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="关于我们"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="25dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/historty_listitem_drawable_selector"
+                        android:focusable="true"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:paddingLeft="15dp" >
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="版本号"
+                                android:textColor="@color/hot_content_notice"
+                                android:textSize="20dp" />
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/version_code"
+                                android:textColor="@color/hot_content_notice"
+                                android:textSize="18dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_filling"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1px"
+                        android:background="@drawable/line" />
+
+                    <TextView
+                        android:id="@+id/tv_filling"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_setting_erwei"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="30dp"
+                    android:paddingTop="20dp"
+                    android:visibility="invisible" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="悦视频"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="20dp" />
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/erweima_yueshipin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="app.joyplus.tv"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp"
+                        android:text="微信公众账号"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="20dp" />
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/erweima_weixin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="悦视频"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="\t如果您遇到什么问题或者有什么建议，请用微信扫描二维码或搜索&quot;悦视频&quot;。我们时刻倾听您的声音。"
+                        android:textColor="@color/hot_content_notice"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

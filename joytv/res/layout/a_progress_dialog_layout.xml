@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/a_popup_waiting_bg">
+    
+    <ProgressBar
+		android:id="@+id/progressbar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminateDrawable="@drawable/a_popup_dialog_loading"/>
+
+</LinearLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/iv_item_layout_haibao"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
+            android:background="@drawable/post_normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/iv_item_layout_gaoqing_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_zero"
+            android:layout_weight="3.5"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_item_layout_gengxinzhi"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_zero"
+            android:layout_weight="0.5"
+            android:background="@drawable/bg_gallery_fram_1"
+            android:gravity="center_vertical|left"
+            android:orientation="vertical" 
+            android:paddingLeft="5dp"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/tv_item_layout_gengxinzhi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="更新至第13集"
+                android:textColor="@color/time_color"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_zero"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gallery_fram"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:id="@+id/ll_item_name_otherinfo" >
+
+            <TextView
+                android:id="@+id/tv_item_layout_name"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/layout_zero"
+                android:layout_weight="1"
+                android:gravity="center_vertical|left"
+                android:singleLine="true"
+                android:textColor="@color/daoyan_name_color"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_item_layout_other_info"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/layout_zero"
+                android:layout_weight="0.8"
+                android:gravity="left|center_vertical"
+                android:textColor="@color/daoyan_names_name_color"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="1dp"
+        android:paddingRight="5dp" >
+
+        <TextView
+            android:id="@+id/tv_item_layout_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/daoyan_name_color"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+</FrameLayout>

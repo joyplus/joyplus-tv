@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="520dp"
+    android:layout_height="105dp"
+    android:background="@drawable/bg_teat_repeat"
+    android:orientation="vertical">
+    <LinearLayout android:layout_width="520dp"
+	    android:layout_height="105dp"
+	    android:paddingLeft="60dp"
+	    android:paddingRight="60dp"
+	    android:layout_marginTop="20dp"
+	    android:orientation="vertical">
+		<TextView android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:textColor="@color/white"
+		    android:gravity="center"
+		    android:singleLine="true"
+		    android:id="@+id/dialog_title"
+		    android:textSize="20dp"/>
+		<LinearLayout android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="20dp"
+		    android:orientation="horizontal">
+		    <Button android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="2"
+		        android:textColor="@color/white"
+		        android:textSize="18dp"
+		        android:id="@+id/history_play"
+		        android:background="@drawable/yingping_button_selector"
+		        android:text="继续播放"/>
+		    <Button android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:layout_marginLeft="10dp"
+		        android:textColor="@color/white"
+		        android:textSize="18dp"
+		        android:id="@+id/history_view"
+		        android:background="@drawable/yingping_button_selector"
+		        android:text="查看详情"/>
+		    <Button android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:layout_marginLeft="10dp"
+		        android:textColor="@color/white"
+		        android:textSize="18dp"
+		        android:id="@+id/history_del"
+		        android:background="@drawable/bg_button_delete_selector"
+		        android:text="删  除"/>
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

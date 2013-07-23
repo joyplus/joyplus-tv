@@ -1,0 +1,251 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gallery_fram" >
+
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:background="#7a1a1a1a"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+
+        <LinearLayout
+            android:id="@+id/row_highlight_backgroun"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="275dp"
+            android:background="@color/btn_reset" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/highlight_backgroud"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="80dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/menubg" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/highlightRect"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignLeft="@id/row_highlight_backgroun"
+            android:layout_alignTop="@id/highlight_backgroud"
+            android:background="@color/common_title_selected" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp" >
+
+            <LinearLayout
+                android:id="@+id/line_1"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="75dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="地区"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ffffff"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="20dp"
+                    android:paddingLeft="20dp"
+                    android:src="@drawable/arrow_left" />
+
+                <com.joyplus.tv.ui.MyGallery1
+                    android:id="@+id/gallery1"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:fadingEdge="@null"
+                    android:spacing="1dp" />
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/arrow_right" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/line_2"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/line_1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="75dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="类别"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ffffff"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="20dp"
+                    android:paddingLeft="20dp"
+                    android:src="@drawable/arrow_left" />
+
+                <com.joyplus.tv.ui.MyGallery1
+                    android:id="@+id/gallery2"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:fadingEdge="@null"
+                    android:spacing="1dp" />
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/arrow_right" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/line_3"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/line_2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="75dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="年代"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#ffffff"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:layout_width="75dp"
+                    android:layout_height="20dp"
+                    android:paddingLeft="20dp"
+                    android:src="@drawable/arrow_left" />
+
+                <com.joyplus.tv.ui.MyGallery1
+                    android:id="@+id/gallery3"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:fadingEdge="@null"
+                    android:spacing="1dp" />
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/arrow_right" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/row_highlight_backgroun"
+            android:layout_alignLeft="@+id/row_highlight_backgroun"
+            android:background="@drawable/bg_button_reset_selector"
+            android:text="重置"
+            android:textColor="@color/reset_btn_text_color_selector"
+            android:textSize="20dp"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/bt_start_filter"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/row_highlight_backgroun"
+            android:background="@drawable/bg_button_reset_selector"
+            android:text="确定"
+            android:textColor="@color/reset_btn_text_color_selector"
+            android:textSize="20dp" 
+            android:layout_alignParentRight="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_marginRight="21dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="invisible"/>
+        
+        <Button
+            android:id="@+id/bt_exit"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/row_highlight_backgroun"
+            android:background="@drawable/bg_button_reset_selector"
+            android:text="取消"
+            android:textColor="@color/reset_btn_text_color_selector"
+            android:textSize="20dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false" 
+            android:layout_toLeftOf="@id/bt_start_filter"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/navigate_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menubg"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="5dp" >
+
+        <TextView
+            android:id="@+id/all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全部分类"
+            android:textColor="@color/common_title_selected"
+            android:textSize="20dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/diqu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_title_selected"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/leibie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_title_selected"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/niandai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_title_selected"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:visibility="invisible">
+	<TextView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="@color/hot_content_notice"
+	    android:textSize="20dp"
+	    android:id="@+id/lastBandTime"/>
+	<FrameLayout android:layout_width="wrap_content"
+	    android:layout_marginTop="7dp"
+	    android:layout_height="wrap_content">
+	    <ImageView android:layout_width="130dp"
+	        android:layout_height="130dp"
+	        android:background="@color/white"/>
+	    <ImageView android:layout_width="150dp"
+		    android:layout_height="150dp"
+		    android:layout_marginLeft="-10dp"
+		    android:layout_marginTop="-10dp"
+		    android:id="@+id/img_erweima"
+		    android:scaleType="centerCrop"/>
+	</FrameLayout>
+	<TextView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textColor="@color/hot_content_content"
+	    android:textSize="20dp"
+	    android:text="如需更换用户，请启动手机上的&quot;悦视频&quot;，然后扫描上面的二维码。"/>
+</LinearLayout>

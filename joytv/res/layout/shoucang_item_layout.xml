@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingRight="34dp" >
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/text_drawable_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp" 
+        android:id="@+id/ll_shoucang_item_1"
+        android:visibility="invisible">
+
+        <include
+            android:id="@+id/inclue_shoucang_item_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/show_item_layout_dianying" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/text_drawable_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp" 
+        android:id="@+id/ll_shoucang_item_2"
+        android:visibility="invisible">
+
+        <include
+            android:id="@+id/inclue_shoucang_item_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/show_item_layout_dianying" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/text_drawable_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp"
+        android:id="@+id/ll_shoucang_item_3" 
+        android:visibility="invisible">
+
+        <include
+            android:id="@+id/inclue_shoucang_item_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/show_item_layout_dianying" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/text_drawable_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp" 
+        android:id="@+id/ll_shoucang_item_4"
+        android:visibility="invisible">
+
+        <include
+            android:id="@+id/inclue_shoucang_item_4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/show_item_layout_dianying" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_zero"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/text_drawable_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp" 
+        android:id="@+id/ll_shoucang_item_5"
+        android:visibility="invisible">
+        <include
+            android:id="@+id/inclue_shoucang_item_5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/show_item_layout_dianying" />
+    </LinearLayout>
+
+</LinearLayout>

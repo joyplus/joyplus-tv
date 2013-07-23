@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <LinearLayout android:layout_width="110dp"
+        android:layout_height="135dp"
+        android:paddingRight="5dp"
+        android:background="#08111a">
+        <ImageView android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+		android:background="@drawable/post_normal"        
+        android:scaleType="fitXY"
+        android:id="@+id/image"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"/>
+    </LinearLayout>
+    
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="135dp"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:orientation="vertical">
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textColor="@color/hot_content_notice"
+            android:singleLine="true"
+            android:id="@+id/title"/>
+        <LinearLayout android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp">
+	        <TextView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="18dp"
+		        android:textColor="@color/hot_content_notice"
+		        android:id="@+id/directors_notice"
+		        />
+	         <TextView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:textSize="18dp"
+		        android:singleLine="true"
+		        android:textColor="@color/hot_content_content"
+		        android:id="@+id/directors"
+		        />
+	          <TextView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="48dp"
+		        android:textSize="18dp"
+		        android:textColor="@color/hot_content_notice"
+		        android:id="@+id/stars_notice"
+		        />
+	          <TextView android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="5dp"
+		        android:textSize="18dp"
+		        android:singleLine="true"
+		        android:textColor="@color/hot_content_content"
+		        android:id="@+id/stars"
+		        />
+    	</LinearLayout>
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="@color/hot_content_notice"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:id="@+id/content"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:id="@+id/umeng_fb_rootId" android:background="#EFEFEF">
+
+     <LinearLayout
+        android:id="@+id/LayoutTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/title_background_sug">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.37"
+            android:gravity="center">
+
+           <TextView
+	        android:id="@+id/umeng_fb_goback_btn"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="14dp"
+	        android:gravity="center"
+	        android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:orientation="horizontal">
+           	    <TextView android:id="@+id/umeng_fb_conversation_title"
+			android:layout_width="fill_parent" android:textColor="#565656"
+			android:layout_height="50dip" android:layout_gravity="center"
+			android:gravity="center" android:text="@string/UMFeedbackConversationTitle" android:textSize="22dip" 
+			android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.37"
+            android:gravity="center"
+            android:orientation="horizontal">
+           	    	<ImageButton android:id="@+id/umeng_fb_see_list_btn"
+			android:layout_marginRight="10dip" android:layout_centerVertical="true"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/umeng_fb_see_list_selector"
+			android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+	  <RelativeLayout
+        android:id="@+id/LinearLayoutTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/LayoutTitle"
+        android:padding="28dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/umeng_fb_content"
+            android:layout_width="fill_parent"
+            android:layout_height="102dp"
+           	android:gravity="top"
+            android:ems="10"
+            android:hint="请输入您的反馈意见"
+            android:inputType="textMultiLine"
+            android:textColor="#9f9f9f"
+            android:textSize="14dp" >
+				<requestFocus />
+          </EditText>
+    </RelativeLayout>
+
+
+<!-- 用户反馈定制化 “友盟反馈”还支持反馈信息的定制化，以便在反馈页面中收集额外信息。开发者可以在此添加需要收集的用户信息。
+
+ 	  <RelativeLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="55dip"
+        android:layout_marginTop="2dip">
+        <EditText android:id="@+id/feedback_name"
+            android:layout_width="100dip" android:layout_height="wrap_content"
+            android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
+            android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
+            android:paddingLeft="9dip" android:paddingTop="10dip"
+            android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
+            android:hint="姓名" android:gravity="top" android:textColor="#737373" />
+        <EditText android:id="@+id/feedback_email"
+            android:layout_toRightOf="@+id/feedback_name"
+            android:layout_width="100dip" android:layout_height="wrap_content"
+            android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
+            android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
+            android:paddingLeft="9dip" android:paddingTop="10dip"
+            android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
+            android:hint="Email" android:gravity="top" android:textColor="#737373" />
+        <EditText android:id="@+id/feedback_phone"
+            android:layout_toRightOf="@+id/feedback_email"
+            android:layout_width="100dip" android:layout_height="wrap_content"
+            android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
+            android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
+            android:paddingLeft="9dip" android:paddingTop="10dip"
+            android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
+            android:hint="电话" android:gravity="top" android:textColor="#737373" />
+         <EditText android:id="@+id/feedback_qq"
+            android:layout_toRightOf="@+id/feedback_phone"
+            android:layout_width="100dip" android:layout_height="wrap_content"
+            android:layout_marginLeft="9dip" android:layout_marginRight="9dip"
+            android:layout_marginTop="7dip" android:layout_marginBottom="2dip"
+            android:paddingLeft="9dip" android:paddingTop="10dip"
+            android:layout_weight="1.0" android:maxEms="10" android:minEms="10"
+            android:hint="QQ" android:gravity="top" android:textColor="#737373" />
+    </RelativeLayout>
+ -->    
+	
+	<RelativeLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="55dip"
+		android:layout_marginTop="2dip">
+		<Spinner android:id="@+id/umeng_fb_age_spinner"
+			android:layout_alignParentLeft="true" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginLeft="8dip"
+			android:layout_centerVertical="true"
+			android:visibility="gone" />
+		<Spinner android:id="@+id/umeng_fb_gender_spinner"
+			android:layout_toRightOf="@id/umeng_fb_age_spinner"
+			android:layout_marginLeft="7dip" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_centerVertical="true" 
+			android:visibility="gone"/>
+
+		<TextView android:id="@+id/umeng_fb_submit"
+			android:background="@drawable/sug_send_buttom"
+			android:layout_alignParentRight="true" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:gravity="center"
+			android:layout_alignBaseline="@id/umeng_fb_age_spinner"
+			android:textColor="#FFFFFF" android:layout_marginRight="28dp" />
+	</RelativeLayout>
+</LinearLayout>
+

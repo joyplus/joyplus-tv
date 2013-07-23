@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#ED1C17</color>
+    <color name="grey">#999999</color>
+    <color name="blue">#2763AB</color>
+    <color name="transparent">#00000000</color>
+    <color name="fengexian">#131313</color>
+    <color name="neirong">#A5A5A5</color>
+    <color name="item_common">#F111</color>
+    <color name="item_1">#F222</color>
+    <color name="item_2">#F000</color>
+    <color name="transparent_gray">#A000</color>
+    <color name="orange">#FFF48B00</color>
+    <color name="darkorange">#FF824600</color>
+    <color name="yellow">#FBBB37</color>
+    <color name="listbg">#C57627</color>
+
+    <!-- Yangzhg -->
+    <color name="movie_bg">#08111A</color>
+    <color name="time_color">#ACBF0A</color>
+    <color name="text_normal">#999999</color>
+    <color name="text_foucs">#F0F0F0</color>
+    <color name="text_press">#FFFFFF</color>
+    <color name="text_active">#F18C21</color>
+    <color name="text_bg_foucs">#F18C21</color>
+    <color name="text_bg_press">#7D4F1E</color>
+    <color name="text_yinlv">#829119</color>
+    <color name="user_name">#DEDEDF</color>
+    <color name="menu_bg">#262D38</color>
+    <!-- <color name="text_active">#7D4F1E</color> -->
+    <color name="text_select_ok">#F0E8E2</color>
+    <color name="menu_bg_select_ok">#F18C21</color>
+    <color name="daoyan_name_color">#C8C9C9</color>
+    <color name="daoyan_names_name_color">#A3A5A6</color>
+    <color name="time_over_time_color">#D07E2F</color>
+    <color name="xiangqing_active_text_color">#EAE8E7</color>
+    <color name="unuse_color">#303A45</color>
+    <!-- Yangzhg -->
+
+
+    <!-- ZhangQibo -->
+    <color name="common_title_selected">#f18c21</color>
+    <color name="common_title_unselected">#999999</color>
+    <color name="common_title_bar_selected">#55f18c21</color>
+    <color name="common_title_bar_unselected">#55999999</color>
+    <color name="hot_line">#804306</color>
+    <color name="clock_green">#acbf0a</color>
+    <color name="blue_content_title">#00aeff</color>
+    <color name="hot_content_notice">#f0f0f0</color>
+    <color name="hot_content_content">#a3a5a6</color>
+    <color name="btn_reset">#262d38</color>
+	<color name="btn_reset_text_unenable">#999999</color>
+	<color name="btn_reset_text_nomal">#00aeff</color>
+	<color name="btn_reset_text_fouces">#ffffff</color>
+	<color name="btn_reset_text_pressed">#ffffff</color>
+    <!-- Yu -->
+    <!-- Yu -->
+
+	<color name="bright_foreground_dark">#ffffffff</color>  
+	<color name="light_black">#E4E4E4</color> 
+</resources>
