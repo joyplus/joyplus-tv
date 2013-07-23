@@ -17,5 +17,5 @@ How To Use
 请[点击此处](http://upgrade.joyplus.tv/opensource/joyplustv.pdf)访问悦视频后台使用文档。
 
 Licenses
-==========
+==========  
 All source code is licensed under the [Licenses](https://github.com/joyplus/joyplus-tv/blob/master/LICENSE)
