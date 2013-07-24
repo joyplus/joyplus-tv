@@ -3,8 +3,8 @@ package com.joyplus.tv.utils;
 
 public final class Log {
 	
-//	private static boolean mbLoggable = false; 
-	private static boolean mbLoggable = true;
+	private static boolean mbLoggable = false; 
+//	private static boolean mbLoggable = true;
 	
 	public static void setLoggable(boolean bLoggable)
 	{

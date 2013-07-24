@@ -42,6 +42,7 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
@@ -128,6 +129,12 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		showDefultDate();
 		initView();
 		showDialog(DIALOG_WAITING);
+		
+		//从DB文件中获取历史播放集数
+		historyPlayIndex4DB = DBUtils.
+				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanConstant.DONGMAN_TYPE);
+		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
+		seletedButtonIndex = historyPlayIndex4DB;
 		
 		getIsShoucangData();
 		getServiceDate();
@@ -501,6 +508,13 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		super.onResume();
 		
 		MobclickAgent.onResume(this);
+		
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 	
 	@Override
@@ -516,6 +530,7 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.bt_xiangqingding:
+			dingService();
 			String dingNum = dingBt.getText().toString();
 			if(dingNum != null && !dingNum.equals("")) {
 				
@@ -527,6 +542,15 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			isDing = true;
 			break;
 		case R.id.bt_xiangqing_xiai:
+			if(isXiai) {
+				
+				cancelshoucang();
+				
+			} else {
+				
+				shoucang();
+
+			}
 
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
@@ -601,8 +625,38 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
 				b.setPadding(8, 0, 0, 0);
 			}
+			//从DB文件中获取历史播放集数
+			HotItemInfo info = DBUtils.
+					getHotItemInfo4DB_History(getApplicationContext(),
+							UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
+			if(info != null) {
+				
+//				int index = playData.CurrentIndex;
+				String prod_subName = info.prod_subname;
+				
+				if(prod_subName != null && !prod_subName.equals("")) {
+					
+					int tempIndex = -1;
+					try {
+						tempIndex = Integer.valueOf(prod_subName);
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					if(tempIndex > -1) {
+						
+						play(tempIndex);
+					}
+					
+				}else {
+					
+					playFirst(0);
+				}
+			} else {
 				
 				playFirst(0);
+			}
 
 		}else{
 			play(seletedButtonIndex-1);
@@ -1384,6 +1438,164 @@ public class ShowXiangqingDongman extends Activity implements View.OnClickListen
 			
 		}
 		
+	}
+
+//	private List<URLS_INDEX> getBofangList(int index){
+//		List<URLS_INDEX> list = new ArrayList<URLS_INDEX>();
+//		
+//		if(index >= date.tv.episodes.length) {
+//			
+//			return null;
+//		}
+//		
+//		DOWN_URLS[] urls = date.tv.episodes[index].down_urls;
+//		if(urls == null){
+//			return null;
+//		}
+//		for(int i=0;i<urls.length; i++){
+//			for(int j=0; j<urls[i].urls.length; j++){
+//				URLS_INDEX url_index = new URLS_INDEX();
+//				url_index.source_from = urls[i].source;
+//				url_index.url = urls[i].urls[j].url;
+//				if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[0])) {
+//					url_index.souces = 0;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[1])) {
+//					url_index.souces = 1;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[2])) {
+//					url_index.souces = 2;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[3])) {
+//					url_index.souces = 3;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[4])) {
+//					url_index.souces = 4;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[5])) {
+//					url_index.souces = 5;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[6])) {
+//					url_index.souces = 6;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[7])) {
+//					url_index.souces = 7;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[8])) {
+//					url_index.souces = 8;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[9])) {
+//					url_index.souces = 9;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[10])) {
+//					url_index.souces = 10;
+//				} else if (urls[i].source.trim().equalsIgnoreCase(Constant.video_index[11])) {
+//					url_index.souces = 11;
+//				} else {
+//					url_index.souces = 12;
+//				}
+//				if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[1])){
+//					url_index.defination = 1;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[0])){
+//					url_index.defination = 2;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[2])){
+//					url_index.defination = 3;
+//				}else if(urls[i].urls[j].type.trim().equalsIgnoreCase(Constant.player_quality_index[3])){
+//					url_index.defination = 4;
+//				} else {
+//					url_index.defination = 5;
+//				}
+//				list.add(url_index);
+//			}
+//		}
+//		if(list.size()>1){
+//			Collections.sort(list, new DefinationComparatorIndex());
+//			Collections.sort(list, new SouceComparatorIndex1());
+//		}
+//		return list;
+//	}
+	
+	private void cancelshoucang(){
+		
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/unfavority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "cancelshoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
+		
+		xiaiBt.setEnabled(true);
+		
+		//闹钟开启的情况下，取消收藏删除数据库中相关数据
+		if(UtilTools.is48TimeClock(getApplicationContext()))
+			DBUtils.deleteData4ProId(getApplicationContext(), 
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
+		
+			if(favNum - 1 >=0) {
+				
+				favNum --;
+				xiaiBt.setText((favNum) + "");
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+			}
+		isXiai = false;
+		
+		if(json == null || json.equals("")) 
+			return;
+		Log.d(TAG, "cancel:----->"+json.toString());
+	}
+	
+	private void shoucang(){
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/favority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "shoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+		xiaiBt.setEnabled(true);
+		favNum ++;
+		
+		xiaiBt.setText(favNum + "");
+		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+		isXiai = true;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
+		Log.d(TAG, "shoucangResult:----->" + json.toString());
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_id = prod_id;
+		info.prod_name = date.tv.name;
+		info.score = date.tv.score;
+		info.prod_pic_url = pic_url;
+		info.cur_episode = date.tv.cur_episode;
+		info.max_episode = date.tv.max_episode;
+		info.prod_type = BangDanConstant.DONGMAN_TYPE;
+		
+		DBUtils.insertOneHotItemInfo2DB(getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id, info);
+	}
+	
+	private void dingService(){
+		String url = Constant.BASE_URL + "program/support";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "dingResult");
+		aq.ajax(cb);
 	}
 	
 	public void dingResult(String url, JSONObject json, AjaxStatus status){

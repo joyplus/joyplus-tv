@@ -15,6 +15,8 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
@@ -30,7 +32,10 @@ public class Main extends Activity implements AdListener{
 	private static final int DIALOG_NETWORK_ERROR = 1;
 
 	private AdManager mManager;
-
+//	private String publisherId = "53f2f418bfc3759e34e4294ae7b4ebb3";//要显示广告的publisherId
+//	private boolean cacheMode = true;//该广告加载时是否用本地缓存
+	private RelativeLayout starting;
+	
 	private App app;
 	
 	/** Called when the activity is first created. */
@@ -54,7 +59,19 @@ public class Main extends Activity implements AdListener{
 		
 		MobclickAgent.onError(this);
 		
+//		String onLineIsShowAd = null;
+		
 		MobclickAgent.updateOnlineConfig(this);
+		
+//		if(Constant.isJoyPlus) {//如果过是JoyPlus自身应用
+//			
+//			UtilTools.setIsJoyPlusApp(getApplicationContext(), true);
+//			onLineIsShowAd = MobclickAgent.getConfigParams(this, "JOYPLUS_TV_SHOW_AD");
+//		} else {
+//			
+//			UtilTools.setIsJoyPlusApp(getApplicationContext(), false);
+//			onLineIsShowAd = MobclickAgent.getConfigParams(this, "OTHER_TV_SHOW_AD");
+//		}
 		
 		String umengChannel = null;
 		
@@ -140,14 +157,31 @@ public class Main extends Activity implements AdListener{
 				}
 			}
 		}
+		
+//		String onLineIsShowAd = true + "";//测试数据
+//		Log.i(TAG, "onLineIsShowAd--->" + onLineIsShowAd);
+//		if(onLineIsShowAd != null && onLineIsShowAd.equals("true")) {
+			
+//			UtilTools.setIsShowAd(getApplicationContext(), true);
 			
 			
 			mManager = new AdManager(this,Constant.LOADING_ADV_PUBLISHERID,Constant.cacheMode);
 			mManager.setListener(this);
 			mManager.requestAd();
-
-			UtilTools.setIsShowAd(getApplicationContext(), false);
-
+			starting = (RelativeLayout)findViewById(R.id.starting);
+//		} else {
+			
+//			if(mManager!=null){
+//				Log.i(TAG,"isCacheLoaded"+mManager.isCacheLoaded());
+//				if(!mManager.isCacheLoaded()){
+					UtilTools.setIsShowAd(getApplicationContext(), false);
+//					final Intent intent = new Intent(Main.this, Main1.class);// AndroidMainScreen为主界面
+//					startActivity(intent);
+//					Main.this.finish();
+//					return;
+//				}
+//			}
+//			UtilTools.setIsShowAd(getApplicationContext(), true);
 		
 	}
 	
@@ -235,6 +269,7 @@ public class Main extends Activity implements AdListener{
 	public void adClicked()
 	{
 		// TODO Auto-generated method stub
+//		Toast.makeText(Logo.this, "广告点击事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -269,6 +304,7 @@ public class Main extends Activity implements AdListener{
 	public void adShown(Ad ad, boolean succeeded)
 	{
 		// TODO Auto-generated method stub
+//		Toast.makeText(Main.this, "广告显示事件", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

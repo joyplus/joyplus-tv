@@ -6,12 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -19,8 +23,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -66,6 +74,8 @@ import com.joyplus.tv.Service.Return.ReturnLogInfo;
 import com.joyplus.tv.Service.Return.ReturnMainHot;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
 import com.joyplus.tv.Service.Return.ReturnTops;
+import com.joyplus.tv.Service.Return.ReturnUserPlayHistories;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.ShiPinInfoParcelable;
@@ -73,8 +83,15 @@ import com.joyplus.tv.entity.YueDanInfo;
 import com.joyplus.tv.ui.CustomGallery;
 import com.joyplus.tv.ui.MyScrollLayout;
 import com.joyplus.tv.ui.MyScrollLayout.OnViewChangeListener;
+import com.joyplus.tv.ui.UserInfo;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.BangDanConstant;
+import com.joyplus.tv.utils.DBUtils;
+import com.joyplus.tv.utils.DataBaseItems;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.Log;
+import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -82,6 +99,7 @@ import com.umeng.update.UmengUpdateAgent;
 public class Main1 extends Activity implements OnItemSelectedListener,
 		OnItemClickListener , AdListener{
 	private String TAG = "Main";
+	public static final String ACTION_USERUPDATE = "user_update";
 	
 	private static final int DIALOG_WAITING = 0;
 
@@ -104,9 +122,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			R.drawable.episode_active, R.drawable.cartoon_active,
 			R.drawable.variety_active, R.drawable.search_active, };
 
+	// private int [] resouces_my_nomal = {
+	// R.drawable.follow_normal,
+	// R.drawable.recent_normal,
+	// R.drawable.down_normal,
+	// R.drawable.system_normal
+	// };
 	private int[] resouces_my_nomal = { R.drawable.follow_normal,
 			R.drawable.recent_normal, R.drawable.system_normal };
-
+	// private int [] resouces_my_active = {
+	// R.drawable.follow_active,
+	// R.drawable.recent_active,
+	// R.drawable.down_active,
+	// R.drawable.system_active,
+	// };
 	private int[] resouces_my_active = { R.drawable.follow_active,
 			R.drawable.recent_active, R.drawable.system_active, };
 
@@ -145,9 +174,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private LinearLayout contentLayout;
 	private TextView noticeView;
 
+	// private View hotView;
+	// private View yeuDanView;
 	private View kuView;
 	private View myView;
 	private TextView lastBandTimeView;
+	// private TextView hot_name_tv;
+	// private TextView hot_score_tv;
+	// private TextView hot_directors_tv;
+	// private TextView hot_starts_tv;
+	// private TextView hot_introduce_tv;
 
 	private Map<Integer, Integer> indexCaces = new HashMap<Integer, Integer>();
 
@@ -159,6 +195,9 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private TranslateAnimation rightTranslateAnimationStep1;
 	private TranslateAnimation rightTranslateAnimationStep2;
 
+	// private FayeClient mClient;
+//	private String macAddress;
+
 	private static final int DIALOG_NETWORK_ERROR = DIALOG_WAITING + 1;
 	private static final int DIALOG_NETWORK_SLOW = DIALOG_NETWORK_ERROR + 1;
 
@@ -168,7 +207,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	private List<HotItemInfo> hot_list = new ArrayList<HotItemInfo>();//用户数据，有可能去过重
 	private List<HotItemInfo> netWorkHotList = new ArrayList<HotItemInfo>();//网络获取数据，不改变
 	private List<YueDanInfo> yuedan_list = new ArrayList<YueDanInfo>();
-	private int isHotLoadedFlag = 1;
+	private int isHotLoadedFlag = 0;
 	private int isYueDanLoadedFlag = 0;
 	
 	private Button upScrollBt,downScrollBt;
@@ -180,7 +219,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	 */
 	private RelativeLayout layout;
 	private AdView mAdView;
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -189,15 +228,22 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 		app = (App) getApplicationContext();
 		aq = new AQuery(this);
+		
+//		MobclickAgent.onError(this);
+		
 
 		startingImageView = (ImageView) findViewById(R.id.image_starting);
 		
 		if(!UtilTools.getIsShowAd(getApplicationContext())) {
 			
 			BitmapFactory.Options opt = new BitmapFactory.Options();
-
+//			  opt.inPreferredConfig = Bitmap.Config.RGB_565; // Each pixel is stored 2 bytes
+		  // opt.inPreferredConfig = Bitmap.Config.ARGB_8888; //Each pixel is stored 4 bytes
+	//
 			opt.inTempStorage = new byte[16 * 1024];
-
+//			opt.inPurgeable = true;
+//			opt.inInputShareable = true;
+//			
 			try {
 				startingImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.starting, opt));
 			} catch (OutOfMemoryError e1) {
@@ -399,6 +445,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 							definitionIcon.setImageDrawable(null);
 							break;
 						}
+						// aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url);
+						// noticeView.setText(gallery1.getSelectedItemPosition()+1
+						// + "/" + hot_list.size());
+//						gallery1.setAdapter(new MainHotItemAdapter(Main.this,
+//								hot_list));
+//						if (indexCaces.get(index) == null) {
+//							gallery1.setSelection(0);
+//						} else {
+//							gallery1.setSelection(indexCaces.get(index));
+//						}
 
 					} else {
 						definitionIcon.setImageDrawable(null);
@@ -408,6 +464,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						gallery1.setAdapter(null);
 						contentLayout.removeAllViews();
 						Log.i(TAG, "SetOnViewChangeListener--->isHotLoadedFlag != 2");
+						getHistoryServiceData();
 						getHotServiceData();
 					}
 					playIcon.setVisibility(View.VISIBLE);
@@ -500,6 +557,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 						noticeView.setText(gallery1.getSelectedItemPosition()
 								+ 1 + "/" + yuedan_list.size());
 						
+//						gallery1.setAdapter(new MainYueDanItemAdapter(Main.this,
+//								yuedan_list));
+//						if (indexCaces.get(index) == null) {
+//							gallery1.setSelection(0);
+//						} else {
+//							gallery1.setSelection(indexCaces.get(index));
+//						}
 					} else {
 						yuedan_list.clear();
 						yuedan_contentViews.clear();
@@ -528,6 +592,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.VISIBLE);
 					highlightImageView_4.setVisibility(View.GONE);
+					
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					kuView.setLayoutParams(new LayoutParams(
@@ -564,6 +629,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					highlightImageView_2.setVisibility(View.GONE);
 					highlightImageView_3.setVisibility(View.GONE);
 					highlightImageView_4.setVisibility(View.VISIBLE);
+
 					itemFram.setVisibility(View.VISIBLE);
 					contentLayout.removeAllViews();
 					myView.setLayoutParams(new LayoutParams(
@@ -597,10 +663,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					gallery1.startAnimation(alpha_appear);
 				}
 
+				// gallery1.startAnimation(alpha_appear);
 			}
 		});
 
 		itemFram = (FrameLayout) findViewById(R.id.itemFram);
+		// clock = (ClockTextView) findViewById(R.id.clock);
 		highlightImageView_1 = (ImageView) findViewById(R.id.highlight_img_1);
 		highlightImageView_2 = (ImageView) findViewById(R.id.highlight_img_2);
 		highlightImageView_3 = (ImageView) findViewById(R.id.highlight_img_3);
@@ -611,15 +679,22 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		playIcon = (ImageView) findViewById(R.id.play_icon);
 		definitionIcon = (ImageView) findViewById(R.id.icon_defination);
 
+		// MarginLayoutParams mlp = (MarginLayoutParams)
+		// gallery1.getLayoutParams();
 		DisplayMetrics metrics = new DisplayMetrics();
 		density = metrics.density;
 		Display display = getWindowManager().getDefaultDisplay();
 		displayWith = display.getWidth();
-
+		// Toast.makeText(this, "widthPixels = " + display.get, 100).show();
+		// Toast.makeText(this, "topMargin = " + mlp.topMargin, 100).show();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
+		// mlp.setMargins(-displayWith+displayWith/2,
+		// mlp.topMargin,
+		// mlp.rightMargin,
+		// mlp.bottomMargin
+		// );
 		gallery1.setAdapter(new MainHotItemAdapter(Main1.this, hot_list));
-
+		// gallery1.setCallbackDuringFling(false);
 		gallery1.setOnItemSelectedListener(this);
 		gallery1.setOnItemClickListener(this);
 		gallery1.setSelection(1);
@@ -632,7 +707,12 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				.getLayoutParams();
 		mlp3.setMargins((displayWith - 40) / 6 + 21, mlp3.topMargin,
 				mlp3.rightMargin, mlp3.bottomMargin);
-
+		// MarginLayoutParams mlp4 = (MarginLayoutParams)
+		// contentLayout.getLayoutParams();
+		// mlp4.setMargins((displayWith-40)/6+15,
+		// mlp4.topMargin,
+		// mlp4.rightMargin,
+		// mlp4.bottomMargin);
 		LayoutParams param = itemFram.getLayoutParams();
 		param.height = 2 * displayWith / 9 + 3;
 		param.width = displayWith / 6 + 3;
@@ -675,13 +755,18 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				if (initStep == 0) {
 					initStep += 1;
 					getHotServiceData();
-					
 						
 					myView.setVisibility(View.INVISIBLE);
 				}
 				Log.d(TAG, "MESSAGE_UPDATEUSER --- >Initstep = " + initStep);
+				aq.id(R.id.iv_head_user_icon).image(
+						app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+						R.drawable.avatar_defult);
+				aq.id(R.id.tv_head_user_name).text(
+						app.getUserInfo().getUserName());
 				
 				Log.i(TAG, "getHistoryServiceData-->MESSAGE_UPDATEUSER");
+				getHistoryServiceData();
 				break;
 			case MESSAGE_STEP1_SUCESS:// 热播列表加载完成
 				Log.d(TAG, "MESSAGE_STEP1_SUCESS --- >Initstep = " + initStep);
@@ -698,28 +783,50 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					if (startingImageView.getVisibility() == View.VISIBLE) {
 						startingImageView.setVisibility(View.GONE);
 						
+//						if(!isShowAd) {
+//							
+//							handler.postDelayed(new Runnable() {
+//								
+//								@Override
+//								public void run() {
+//									// TODO Auto-generated method stub
+//									
+//									if(!startingImageView.isShown()) {
+//										UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+//									}
+//								}
+//							}, 1000);
+//						}
 						startingImageView.startAnimation(alpha_disappear);
 						rootLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
 						handler.removeMessages(MESSAGE_START_TIMEOUT);
-
+//						new Thread(new CheckPlayUrl()).start();
 						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->1");
 						
+//						if(isShowAd) {
 							
 							removeDialog(DIALOG_WAITING);
+//						}
 					} else {
 						Log.i(TAG,"removeDialog(DIALOG_WAITING);---else ---->2");
 						removeDialog(DIALOG_WAITING);
 						contentLayout.setVisibility(View.VISIBLE);
 						gallery1.requestFocus();
+//						new Thread(new CheckPlayUrl()).start();
 					}
 
 					handler.removeMessages(MESSAGE_30S_TIMEOUT);
 				}
+
+				// 当悦单加载完成时，开始下载用户收藏数据，并插入到数据库
+				getShouCangData(URLUtils.getShoucangURL(app
+						.getUserInfo().getUserId()));
 				
 				/*
 				 * adkey show,the Viewo of ad init()
 				 */
+//				if(UtilTools.getIsShowAd(getApplicationContext())) {
 					
 					if (mAdView != null) {
 						removeBanner();
@@ -755,6 +862,21 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				if (initStep < 3) {
 					startingImageView.setVisibility(View.GONE);
 					
+//					if(!isShowAd) {
+//						
+//						handler.postDelayed(new Runnable() {
+//							
+//							@Override
+//							public void run() {
+//								// TODO Auto-generated method stub
+//								
+//								if(!startingImageView.isShown()) {
+//									UtilTools.recycleBitmap(((BitmapDrawable)startingImageView.getDrawable()).getBitmap());
+//								}
+//							}
+//						}, 1000);
+//					}
+					
 					contentLayout.setVisibility(View.INVISIBLE);
 					
 					if(!UtilTools.getIsShowAd(getApplicationContext())) {
@@ -765,7 +887,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 				break;
 			case MESSAGE_UPDATEUSER_HISTORY_SUCEESS:// 超时还未加载好
-
+				// if(initStep<3){
+				// startingImageView.setVisibility(View.GONE);
+				// contentLayout.setVisibility(View.INVISIBLE);
+				// showDialog(DIALOG_WAITING);
+				// }
 				break;
 			case MESSAGE_30S_TIMEOUT:// 超过30S时间，弹出网络速度慢dialog
 				removeDialog(DIALOG_WAITING);
@@ -980,7 +1106,10 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	private void initNetWorkData() {
 		
+			
 		initAppkeyAndBaseurl(null);
+		
+		
 	}
 	
 	private void initAppkeyAndBaseurl(ReturnLogInfo returnLogInfo) {
@@ -989,12 +1118,14 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		TextView playStoreTv = (TextView) findViewById(R.id.tv_play_store);
 		ImageView logoIv = (ImageView) findViewById(R.id.iv_head_logo);
 		
-
 		logoIv.setImageResource(R.drawable.logo_custom);
 		headers.put("app_key", Constant.APPKEY);
 		headers.put("client", "tv");
 		app.setHeaders(headers);
-		handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+
+		
+		checkLogin();
+		// getHotServiceData();
 		handler.sendEmptyMessageDelayed(MESSAGE_START_TIMEOUT, LOADING_PIC_TIME);
 		handler.sendEmptyMessageDelayed(MESSAGE_30S_TIMEOUT, LOADING_TIME_OUT);// 图片撤掉20S后
 	}
@@ -1004,6 +1135,13 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		super.onResume();
 
 		MobclickAgent.onResume(this);
+
+		if (app.getUserInfo() != null) {
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 
 		if (!isNetWorkFine && isWifiReset) {// 如果之前网络不正常并且重新设置过wifi
 
@@ -1040,6 +1178,93 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
+	}
+
+	public void ReadLocalAppKey() {
+		// online 获取APPKEY
+		MobclickAgent.updateOnlineConfig(this);
+		String OnLine_Appkey = MobclickAgent.getConfigParams(this, "APPKEY");
+		if (OnLine_Appkey != null && OnLine_Appkey.length() > 0) {
+			Constant.APPKEY = OnLine_Appkey;
+			headers.remove("app_key");
+			headers.put("app_key", OnLine_Appkey);
+			app.setHeaders(headers);
+		}
+	}
+
+	public boolean checkLogin() {
+		String usr_id = null;
+		usr_id = app.getUserData("userId");
+		if (usr_id == null) {
+			String macAddress = null;
+			WifiManager wifiMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			WifiInfo info = (null == wifiMgr ? null : wifiMgr
+					.getConnectionInfo());
+			if (info != null) {
+				macAddress = info.getMacAddress();
+			}
+			// 2. 通过调用 service account/generateUIID把UUID传递到服务器
+			String url = Constant.BASE_URL + "account/generateUIID";
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("uiid", macAddress);
+			params.put("device_type", "Android");
+
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.header("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2");
+			cb.header("app_key", Constant.APPKEY);
+
+			cb.params(params).url(url).type(JSONObject.class)
+					.weakHandler(this, "CallServiceResult");
+			aq.ajax(cb);
+		} else {
+			UserInfo currentUserInfo = new UserInfo();
+			currentUserInfo.setUserId(app.getUserData("userId"));
+			currentUserInfo.setUserName(app.getUserData("userName"));
+			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+			headers.put("user_id", currentUserInfo.getUserId());
+			app.setUser(currentUserInfo);
+			 handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+
+		}
+		return false;
+	}
+
+	public void CallServiceResult(String url, JSONObject json, AjaxStatus status) {
+
+		if (json != null) {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, "CallServiceResult" + json.toString());
+			try {
+				UserInfo currentUserInfo = new UserInfo();
+				if (json.has("user_id")) {
+					currentUserInfo.setUserId(json.getString("user_id").trim());
+				} else if (json.has("id")) {
+					currentUserInfo.setUserId(json.getString("id").trim());
+				}
+
+				if (json.has("user_id") || json.has("id")) {
+
+					currentUserInfo.setUserName(json.getString("nickname"));
+					currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+					app.SaveUserData("userId", currentUserInfo.getUserId());
+					app.SaveUserData("userName", json.getString("nickname"));
+					app.SaveUserData("userAvatarUrl", json.getString("pic_url"));
+					app.setUser(currentUserInfo);
+					headers.put("user_id", currentUserInfo.getUserId());
+					 handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+				}
+
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		}
 	}
 
 	@Override
@@ -1337,9 +1562,113 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			return true;
 
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-
+			// final int positon1 = gallery1.getSelectedItemPosition();
+			// if(leftTranslateAnimationStep2 == null){
+			// leftTranslateAnimationStep2 = new
+			// TranslateAnimation(itemFram.getLeft()+itemFram.getWidth()/5-itemFram.getWidth(),
+			// itemFram.getLeft()-itemFram.getWidth(),
+			// 0,
+			// 0);
+			// leftTranslateAnimationStep2.setDuration(250);
+			// leftTranslateAnimationStep2.setInterpolator(new
+			// AccelerateInterpolator(0.1f));
+			// }
+			// switch (titleGroup.getSelectedTitleIndex()) {
+			// case 1:
+			// if(positon1<hot_list.size()-1){
+			// //
+			// aq.id(highlightImageView).image(hot_list.get(positon1+1).prod_pic_url,true,true);
+			// // itemFram.startAnimation(leftTranslateAnimationStep2);
+			// // noticeView.setText(positon1+2 + "/" + hot_list.size());
+			// changeContent(1);
+			// }
+			// break;
+			// case 2:
+			// if(positon1<resouces_lib_active.length-1){
+			// //
+			// highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+			// // itemFram.startAnimation(leftTranslateAnimationStep2);
+			// // noticeView.setText(positon1+2 + "/" +
+			// resouces_lib_active.length);
+			// changeContent(1);
+			// }
+			// break;
+			// case 3:
+			// if(positon1<resouces_lib_active.length-1){
+			// highlightImageView.setImageResource(resouces_lib_active[positon1+1]);
+			// itemFram.startAnimation(leftTranslateAnimationStep2);
+			// noticeView.setText(positon1+2 + "/" +
+			// resouces_lib_active.length);
+			// }
+			// break;
+			// case 4:
+			// if(positon1<resouces_my_active.length-1){
+			// highlightImageView.setImageResource(resouces_my_active[positon1+1]);
+			// itemFram.startAnimation(leftTranslateAnimationStep2);
+			// noticeView.setText(positon1+2 + "/" + resouces_my_active.length);
+			// }
+			// break;
+			//
+			// }
 			return true;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
+			//
+			//
+			// final int positon2 = gallery1.getSelectedItemPosition();
+			// if(rightTranslateAnimationStep2 == null){
+			// rightTranslateAnimationStep2 = new
+			// TranslateAnimation(itemFram.getLeft()-itemFram.getWidth()/4-itemFram.getWidth(),
+			// itemFram.getLeft()-itemFram.getWidth(),
+			// 0,
+			// 0);
+			// rightTranslateAnimationStep2.setDuration(250);
+			// rightTranslateAnimationStep2.setInterpolator(new
+			// AccelerateInterpolator(0.1f));
+			// }
+			//
+			//
+			// switch (titleGroup.getSelectedTitleIndex()) {
+			// case 1:
+			// // if(positon2>0){
+			// // highlightImageView.setImageResource(resouces[positon2]);
+			// // itemFram.startAnimation(rightTranslateAnimationStep2);
+			// // noticeView.setText(positon2 + "/" + resouces.length);
+			// // }
+			// if(positon2>0){
+			// //
+			// aq.id(highlightImageView).image(hot_list.get(positon2-1).prod_pic_url,true,true);
+			// // itemFram.startAnimation(rightTranslateAnimationStep2);
+			// // noticeView.setText(positon2 + "/" + hot_list.size());
+			// changeContent(-1);
+			// }
+			// break;
+			// case 2:
+			// if(positon2>0){
+			// //
+			// highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
+			// // itemFram.startAnimation(leftTranslateAnimationStep2);
+			// // noticeView.setText(positon2 + "/" +
+			// resouces_lib_active.length);
+			// changeContent(-1);
+			// }
+			// break;
+			// case 3:
+			// if(positon2>0){
+			// highlightImageView.setImageResource(resouces_lib_active[positon2-1]);
+			// itemFram.startAnimation(leftTranslateAnimationStep2);
+			// noticeView.setText(positon2 + "/" + resouces_lib_active.length);
+			// }
+			// break;
+			// case 4:
+			// if(positon2>0){
+			// highlightImageView.setImageResource(resouces_my_active[positon2-1]);
+			// itemFram.startAnimation(leftTranslateAnimationStep2);
+			// noticeView.setText(positon2 + "/" + resouces_my_active.length);
+			// }
+			// break;
+			//
+			// }
+			//
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
@@ -1364,7 +1693,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int index, long arg3) {
 		// TODO Auto-generated method stub
-
+		// Toast.makeText(this, "item click index = " +
+		// titleGroup.getSelectedTitleIndex()+"[" + index + "]", 100).show();
 		switch (titleGroup.getSelectedTitleIndex()) {
 		case 1:
 			HotItemInfo info = hot_list.get(index);
@@ -1387,6 +1717,25 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 					playDate.prod_time = Long.valueOf(info.playback_time) * 1000;
 				}
 				playDate.prod_sub_name = info.prod_subname;
+//				if(playDate.prod_type!=1){
+//					
+//					if(playDate.prod_type == 3) {
+//						
+//						playDate.CurrentIndex = - 1;
+//					} else {
+//						
+////						String  currentIndex = ((HistortyAdapter)listView.getAdapter()).data.get(arg2).prod_subname;
+//						if(currentIndex!=null&&!"".equals(currentIndex)){
+//							int current = Integer.valueOf(currentIndex);
+//							if(current>0){
+//								current = current-1;
+//							}
+//							playDate.CurrentIndex = current;
+//						}
+//					}
+//					
+//				}
+				// playDate.prod_qua = Integer.valueOf(info.definition);
 				app.setmCurrentPlayDetailData(playDate);
 				app.set_ReturnProgramView(null);
 				startActivity(intent);
@@ -1474,6 +1823,8 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				bundle.putString("ID", yuedan_list.get(index).id);
 				bundle.putString("NAME", yuedan_list.get(index).name);
 				yuedanIntent.putExtras(bundle);
+				// yuedanIntent.putParcelableArrayListExtra("yuedan_list_type",
+				// yuedan_list.get(index).shiPinList);
 				yuedanIntent.setClass(Main1.this, ShowYueDanListActivity.class);
 			}
 			startActivity(yuedanIntent);
@@ -1500,8 +1851,16 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		case 4:
 			switch (index) {
 			case 0:
+				Intent scIntent = new Intent(this,
+						ShowShoucangHistoryActivity.class);
+				startActivityForResult(scIntent, 100);
+				// startActivity(new
+				// Intent(this,ShowShoucangHistoryActivity.class));
 				break;
 			case 1:
+				Intent lsIntent = new Intent(this, HistoryActivity.class);
+				startActivityForResult(lsIntent, 100);
+				// startActivity(new Intent(this,HistoryActivity.class));
 				break;
 			case 2:
 				// 设置
@@ -1527,9 +1886,24 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 	public void getHotServiceData() {
 		String url = Constant.BASE_URL + "tv_net_top"
 				+ "?page_num=1&page_size=1000";
+		// String url =
+		// "http://api.joyplus.tv/joyplus-service/index.php/tv_net_top?page_num=1&page_size=1000&app_key=ijoyplus_android_0001";
 
+		// String url = Constant.BASE_URL;
 		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
 		cb.url(url).type(JSONObject.class).weakHandler(this, "initHotData");
+
+		cb.SetHeader(app.getHeaders());
+		aq.ajax(cb);
+	}
+
+	public void getHistoryServiceData() {
+		String url = Constant.BASE_URL + "user/playHistories"
+				+ "?page_num=1&page_size=1";
+
+		// String url = Constant.BASE_URL;
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.url(url).type(JSONObject.class).weakHandler(this, "initHistoryData");
 
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
@@ -1745,6 +2119,203 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 
 	}
 
+	public void initHistoryData(String url, JSONObject json, AjaxStatus status) {
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+			// aq.id(R.id.ProgressText).invisible();
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+
+		if (json == null || json.equals(""))
+			return;
+
+		Log.d(TAG, "initHistoryData data = " + json.toString());
+		Log.i(TAG, "hot_list.size()-->" + hot_list.size());
+		try {
+			ReturnUserPlayHistories result = mapper.readValue(json.toString(),
+					ReturnUserPlayHistories.class);
+			
+			if(result == null || result.histories == null) {
+				
+				return;
+			}
+			HotItemInfo item = new HotItemInfo();
+//			if (hot_list.size() > 0) {//第一个存储的是历史记录，因此type是0
+//				if (hot_list.get(0).type == 0) {//重新loading历史数据时，删除原先的view和数据
+//					hot_list.remove(0);
+//					hot_contentViews.remove(0);
+//				}
+//			}
+			if (result.histories.length == 0) {//历史记录为空，loading最原始数据即可 总共11个
+				if (isHotLoadedFlag == 1) {
+					if (titleGroup.getSelectedTitleIndex() == 1) {
+						itemFram.setVisibility(View.VISIBLE);
+						updateHotDate();
+						updateHotContentLayoue();
+						gallery1.setAdapter(new MainHotItemAdapter(Main1.this,
+								hot_list));
+						gallery1.setSelection(0);
+						handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
+					}
+					isHotLoadedFlag = 2;
+				} else if (isHotLoadedFlag == 0) {
+					isHotLoadedFlag = 1;
+				} else if (isHotLoadedFlag == 2) {
+					hot_list.clear();
+					for(int i=0; i<netWorkHotList.size(); i++){
+						hot_list.add(netWorkHotList.get(i));
+					}
+					if (titleGroup.getSelectedTitleIndex() == 1) {
+						itemFram.setVisibility(View.VISIBLE);
+						gallery1.setAdapter(new MainHotItemAdapter(Main1.this,
+								hot_list));
+						gallery1.setSelection(0);
+						handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
+					}
+				}
+				return;
+			}
+			item.type = 0;
+			item.id = result.histories[0].id;
+			item.prod_id = result.histories[0].prod_id;
+			item.prod_name = result.histories[0].prod_name;
+			item.prod_type = result.histories[0].prod_type;
+			// item.prod_pic_url = result.histories[0].big_prod_pic_url;
+			String bigPicUrl = result.histories[0].big_prod_pic_url;
+			if (bigPicUrl == null || bigPicUrl.equals("")
+					|| bigPicUrl.equals(UtilTools.EMPTY)) {
+
+				bigPicUrl = result.histories[0].prod_pic_url;
+			}
+			item.prod_pic_url = bigPicUrl;
+			item.stars = result.histories[0].stars;
+			item.directors = result.histories[0].directors;
+			item.favority_num = result.histories[0].favority_num;
+			item.support_num = result.histories[0].support_num;
+			item.publish_date = result.histories[0].publish_date;
+			item.score = result.histories[0].score;
+			item.area = result.histories[0].area;
+			item.cur_episode = result.histories[0].cur_episode;
+			item.definition = result.histories[0].definition;
+			item.prod_summary = result.histories[0].prod_summary;
+			item.prod_subname = result.histories[0].prod_subname;
+			item.duration = result.histories[0].duration;
+			item.playback_time = result.histories[0].playback_time;
+			item.video_url = result.histories[0].video_url;
+//
+//			View hotView = LayoutInflater.from(Main.this).inflate(
+//					R.layout.layout_hot, null);
+//			TextView hot_name_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_name);
+//			TextView hot_score_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_score);
+//			TextView hot_directors_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_directors);
+//			TextView hot_starts_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_stars);
+//			TextView hot_introduce_tv = (TextView) hotView
+//					.findViewById(R.id.hot_content_introduce);
+//			ImageView icon_douban = (ImageView) hotView
+//					.findViewById(R.id.icon_douban);
+//			if ("3".equals(item.prod_type.trim())) {
+//				TextView hot_title_director = (TextView) hotView
+//						.findViewById(R.id.title_directors);
+//				TextView hot_title_stars = (TextView) hotView
+//						.findViewById(R.id.title_stars);
+//				hot_title_director.setText(R.string.xiangqing_zongyi_zhuchi);
+//				hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+//				hot_starts_tv.setText(item.directors);
+//				hot_directors_tv.setText(item.stars);
+//				icon_douban.setVisibility(View.INVISIBLE);
+//			} else {
+//				hot_directors_tv.setText(item.directors);
+//				hot_starts_tv.setText(item.stars);
+//			}
+//
+//			hot_name_tv.setText(item.prod_name);
+//			hot_score_tv.setText(UtilTools.formateScore(item.score));
+//			hot_introduce_tv.setText(item.prod_summary);
+//			hot_list.add(0, item);
+			
+//			Log.i(TAG, "item--->" + item.prod_id);
+//			hot_list.add(item);
+//			
+//			for(int i=0;i<netWorkHotList.size();i++) {
+//				HotItemInfo tempHotItemInfo = netWorkHotList.get(i);
+//				
+//				Log.i(TAG, "tempHotItemInfo--->" + tempHotItemInfo.prod_id);
+//				
+//				if(!tempHotItemInfo.prod_id.equals(item.prod_id)) {
+//					
+//					hot_list.add(tempHotItemInfo);
+//				}else {
+//					
+//					hot_contentViews.remove(i);
+//				}
+//			}
+			
+//			hot_contentViews.add(0, hotView);
+//			
+//			Log.d(TAG, "lengh = " + hot_contentViews.size());
+			if (isHotLoadedFlag == 1) {
+				if (titleGroup.getSelectedTitleIndex() == 1) {
+					itemFram.setVisibility(View.VISIBLE);
+					hot_list.add(0, item);
+					updateHotDate();
+					updateHotContentLayoue();
+					gallery1.setAdapter(new MainHotItemAdapter(Main1.this,
+							hot_list));
+					if (hot_list.size() > 0) {
+						if (hot_list.get(0).type == 0) {
+							gallery1.setSelection(1);
+						} else {
+							gallery1.setSelection(0);
+						}
+					}
+					handler.sendEmptyMessage(MESSAGE_STEP1_SUCESS);
+				}
+				isHotLoadedFlag = 2;
+				return;
+			} else if (isHotLoadedFlag == 0) {
+				hot_list.add(item);
+				isHotLoadedFlag = 1;
+			} else if (isHotLoadedFlag == 2) {
+				hot_list.clear();
+				hot_list.add(item);
+				for(int i=0; i<netWorkHotList.size(); i++){
+					hot_list.add(netWorkHotList.get(i));
+				}
+				updateHotDate();
+				updateHotContentLayoue();
+				if (titleGroup.getSelectedTitleIndex() == 1) {
+					itemFram.setVisibility(View.VISIBLE);
+					
+					gallery1.setAdapter(new MainHotItemAdapter(Main1.this,
+							hot_list));
+					if (hot_list.size() > 0) {
+						if (hot_list.get(0).type == 0) {
+							gallery1.setSelection(1);
+						} else {
+							gallery1.setSelection(0);
+						}
+					}
+					handler.sendEmptyMessage(MESSAGE_UPDATEUSER_HISTORY_SUCEESS);
+				}
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	public void initHotData(String url, JSONObject json, AjaxStatus status) {
 		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
 			// aq.id(R.id.ProgressText).invisible();
@@ -1760,7 +2331,20 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 			Log.d(TAG, "initHotData" + json.toString());
 			ReturnMainHot result = mapper.readValue(json.toString(),
 					ReturnMainHot.class);
-
+			// hot_list.clear();
+			
+			//当历史加载完成，hot数据后加载
+			
+//			String tempProdId = null;
+//			
+//			if(hot_list != null && hot_list.size() > 0 && netWorkHotList.size() <= 0 ) {
+//				
+//				HotItemInfo tempInfo = hot_list.get(0);
+//				if(tempInfo != null) {
+//					
+//					tempProdId = tempInfo.prod_id;
+//				}
+//			}
 			for (int i = 0; i < result.items.length; i++) {
 				HotItemInfo item = new HotItemInfo();
 				item.type = 1;
@@ -1785,8 +2369,51 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				item.playback_time = "";
 				hot_list.add(item);
 				netWorkHotList.add(item);//网络数据
-
+//				View hotView = LayoutInflater.from(Main.this).inflate(
+//						R.layout.layout_hot, null);
+//				TextView hot_name_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_name);
+//				TextView hot_score_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_score);
+//				TextView hot_directors_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_directors);
+//				TextView hot_starts_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_stars);
+//				TextView hot_introduce_tv = (TextView) hotView
+//						.findViewById(R.id.hot_content_introduce);
+//				ImageView icon_douban = (ImageView) hotView
+//						.findViewById(R.id.icon_douban);
+//				if ("3".equals(item.prod_type.trim())) {
+//					TextView hot_title_director = (TextView) hotView
+//							.findViewById(R.id.title_directors);
+//					TextView hot_title_stars = (TextView) hotView
+//							.findViewById(R.id.title_stars);
+//					hot_title_director
+//							.setText(R.string.xiangqing_zongyi_zhuchi);
+//					hot_title_stars.setText(R.string.xiangqing_zongyi_shoubo);
+//					hot_starts_tv.setText(item.directors);
+//					hot_directors_tv.setText(item.stars);
+//					icon_douban.setVisibility(View.INVISIBLE);
+//				} else {
+//					hot_directors_tv.setText(item.directors);
+//					hot_starts_tv.setText(item.stars);
+//				}
+//
+//				hot_name_tv.setText(item.prod_name);
+//				hot_score_tv.setText(UtilTools.formateScore(item.score));
+//				hot_introduce_tv.setText(item.prod_summary);
+				
+//				if(tempProdId != null && tempProdId.endsWith(item.prod_id)) {
+//					
+//					//说明历史加载先完成
+//				} else {
+//					
+//					hot_list.add(item);
+//					netWorkHotList.add(item);//网络数据
+//					hot_contentViews.add(hotView);
+//				}
 			}
+			// Log.d
 
 			if (isHotLoadedFlag == 1) {
 				if (titleGroup.getSelectedTitleIndex() == 1) {
@@ -1809,7 +2436,11 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 				return;
 			}
 			isHotLoadedFlag = 1;
-
+			// aq.id(highlightImageView).image(hot_list.get(gallery1.getSelectedItemPosition()).prod_pic_url,true,true);
+			// noticeView.setText(gallery1.getSelectedItemPosition()+1 + "/" +
+			// hot_list.size());
+			// changeContent(0);
+			// hot_list.add(arg0);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1819,6 +2450,149 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	// private void changeContent1(int dx){
+	// final int positon = gallery1.getSelectedItemPosition();
+	// switch (titleGroup.getSelectedTitleIndex()) {
+	// case 1:
+	//
+	// // hot_name_tv = (TextView) hotView.findViewById(R.id.hot_content_name);
+	// // hot_score_tv = (TextView)
+	// hotView.findViewById(R.id.hot_content_score);
+	// // hot_directors_tv = (TextView)
+	// hotView.findViewById(R.id.hot_content_directors);
+	// // hot_starts_tv = (TextView)
+	// hotView.findViewById(R.id.hot_content_stars);
+	// // hot_introduce_tv = (TextView)
+	// hotView.findViewById(R.id.hot_content_introduce);
+	// // Log.d(TAG, "------------------------");
+	//
+	// //
+	// aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true);
+	//
+	// ImageView img = (ImageView)
+	// gallery1.findViewWithTag(hot_list.get(positon+dx).prod_pic_url);
+	// if(img != null){
+	// highlightImageView.setImageDrawable(img.getDrawable());
+	// }else{
+	// aq.id(highlightImageView).image(hot_list.get(positon+dx).prod_pic_url,true,true);
+	// }
+	// // if(dx==1){
+	// // itemFram.startAnimation(leftTranslateAnimationStep2);
+	// // }
+	// // if(dx==-1){
+	// // itemFram.startAnimation(rightTranslateAnimationStep2);
+	// // }
+	//
+	// if(indexCaces.get(1)!=null&&indexCaces.get(1)<positon){
+	// itemFram.startAnimation(leftTranslateAnimationStep2);
+	// }
+	// Log.d(TAG, "positon = " + positon + "laset = " + indexCaces.get(1));
+	// if(indexCaces.get(1)!=null&&indexCaces.get(1)>positon){
+	// itemFram.startAnimation(rightTranslateAnimationStep2);
+	// }
+	//
+	// // itemFram.setVisibility(View.GONE);
+	// handler.removeCallbacksAndMessages(null);
+	// handler.postDelayed((new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// // TODO Auto-generated method stub
+	// contentLayout.removeAllViews();
+	// View hotView = hot_contentViews.get(positon);
+	// hotView.setLayoutParams(new
+	// LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+	// contentLayout.startAnimation(alpha_appear);
+	// contentLayout.addView(hotView);
+	// }
+	// }),280);
+	//
+	//
+	// // contentLayout.startAnimation(alpha_appear);
+	// // hotView.invalidate();
+	//
+	// // aq.id(R.id.hot_content_name).text(hot_list.get(positon+dx).prod_name);
+	// // aq.id(R.id.hot_content_score).text(hot_list.get(positon+dx).score);
+	// //
+	// aq.id(R.id.hot_content_directors).text(hot_list.get(positon+dx).directors);
+	// // aq.id(R.id.hot_content_stars).text(hot_list.get(positon+dx).stars);
+	// //
+	// aq.id(R.id.hot_content_introduce).text(hot_list.get(positon+dx).prod_summary);
+	// break;
+	// case 2:
+	// highlightImageView.setImageResource(resouces_lib_active[positon]);
+	// noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+	// contentLayout.removeAllViews();
+	// yeuDanView.setLayoutParams(new
+	// LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+	// contentLayout.startAnimation(alpha_appear);
+	// contentLayout.addView(yeuDanView);
+	// break;
+	// case 3:
+	// highlightImageView.setImageResource(resouces_lib_active[positon]);
+	// noticeView.setText(positon+1 + "/" + resouces_lib_active.length);
+	// break;
+	// case 4:
+	// highlightImageView.setImageResource(resouces_my_active[positon]);
+	// noticeView.setText(positon+1 + "/" + resouces_my_active.length);
+	// break;
+	// default:
+	// break;
+	// }
+	// }
+
+	private void updateUser(String userId) {
+		// TODO Auto-generated method stub
+		if (userId.equals(app.getUserData("userId"))) {
+			UserInfo currentUserInfo = new UserInfo();
+			currentUserInfo.setUserId(app.getUserData("userId"));
+			currentUserInfo.setUserName(app.getUserData("userName"));
+			currentUserInfo.setUserAvatarUrl(app.getUserData("userAvatarUrl"));
+			headers.put("user_id", currentUserInfo.getUserId());
+			app.setUser(currentUserInfo);
+			sendBroadcast(new Intent(ACTION_USERUPDATE));
+			handler.sendEmptyMessage(MESSAGE_UPDATEUSER);//当切换用户id时，重新加载页面
+		} else {
+			String url = Constant.BASE_URL + "user/view?userid=" + userId;
+			AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+			cb.url(url).type(JSONObject.class)
+					.weakHandler(this, "getBandUserInfoResult");
+			cb.SetHeader(app.getHeaders());
+			aq.ajax(cb);
+		}
+	}
+
+	public void getBandUserInfoResult(String url, JSONObject json,
+			AjaxStatus status) {
+
+		if (json != null) {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, "getBandUserInfoResult" + json.toString());
+			try {
+				UserInfo currentUserInfo = new UserInfo();
+				if (json.has("user_id")) {
+					currentUserInfo.setUserId(json.getString("user_id").trim());
+				} else {
+					currentUserInfo.setUserId(json.getString("id").trim());
+				}
+				currentUserInfo.setUserName(json.getString("nickname"));
+				currentUserInfo.setUserAvatarUrl(json.getString("pic_url"));
+				headers.put("user_id", currentUserInfo.getUserId());
+				app.setUser(currentUserInfo);
+				sendBroadcast(new Intent(ACTION_USERUPDATE));
+				handler.sendEmptyMessage(MESSAGE_UPDATEUSER);
+				// headers.put("user_id", currentUserInfo.get);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
 	}
 
@@ -1898,6 +2672,7 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 									handler.sendEmptyMessageDelayed(
 											MESSAGE_30S_TIMEOUT,
 											LOADING_TIME_OUT);// 图片撤掉20S后
+									checkLogin();
 
 								}
 							})
@@ -1935,6 +2710,34 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		}
 	}
 
+	// class PLAY_URLS_INDEX{
+	// int index;
+	// // public String source;
+	// public String url;
+	// public URLS[] urls;
+	// }
+
+	// class URLS_INDEX{
+	// int souces;
+	// int defination;
+	// String url;
+	// }
+
+	// private void removeSameInHotList(){
+	// HotItemInfo info = hot_list.get(0);
+	// if(info.type == 0){
+	// Log.d(TAG, "---------------------> remove same");
+	// if(hot_list.size()>1){
+	// for(int i=1; i<hot_list.size();i++){
+	// HotItemInfo info2 = hot_list.get(i);
+	// if(info.prod_id.equals(info2.prod_id)){
+	// hot_list.remove(info2);
+	// }
+	// }
+	// }
+	// }
+	// }
+
 	protected void getServiceData(String url, String interfaceName) {
 		// TODO Auto-generated method stub
 
@@ -1944,7 +2747,413 @@ public class Main1 extends Activity implements OnItemSelectedListener,
 		cb.SetHeader(app.getHeaders());
 		aq.ajax(cb);
 	}
+
+	protected void getShouCangData(String url) {
+		// TODO Auto-generated method stub
+
+		getServiceData(url, "initShouCangServiceData");
+	}
 	
+	protected void getHistoryData(String url) {
+		// TODO Auto-generated method stub
+
+		getServiceData(url, "initHistoryServiceData");
+	}
+
+	public void initShouCangServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		try {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, "initShouCangServiceData" + json.toString());
+			compareUsrFav4DB(
+					UtilTools.returnUserFavoritiesJson(json.toString()),
+					app.getUserInfo().getUserId());
+			
+			//获取历史播放记录数据
+			getHistoryData(URLUtils.
+					getHistoryURL(UtilTools.getCurrentUserId(getApplicationContext())));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void initHistoryServiceData(String url, JSONObject json,
+			AjaxStatus status) {
+		// TODO Auto-generated method stub
+		
+		if (status.getCode() == AjaxStatus.NETWORK_ERROR) {
+
+			app.MyToast(aq.getContext(),
+					getResources().getString(R.string.networknotwork));
+			return;
+		}
+		
+		try {
+
+			if (json == null || json.equals(""))
+				return;
+
+			Log.d(TAG, "initHistoryServiceData" + json.toString());
+			compareUsrHis4DB(
+					UtilTools.returnUserHistoryJson(json.toString()),
+					app.getUserInfo().getUserId());
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// 网上用户id数据和本地用户id数据进行比较
+	// 以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
+	private void compareUsrHis4DB(List<HotItemInfo> list, String userId) {
+		
+		if (list == null) {
+
+			return;
+		}
+		
+		String selection = UserShouCang.USER_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = { userId };
+
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+		
+		String[] columns = { UserHistory.PRO_ID};// 返回影片id
+		
+		Cursor cursor_proId = database.query(
+				TvDatabaseHelper.HISTORY_TABLE_NAME, columns, selection,
+				selectionArgs, null, null, null);
+		
+		if (list.size() > 0) {// 当用户有历史记录时
+			
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+				
+				database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+						selectionArgs);
+				
+			}
+			
+			for(HotItemInfo info:list) {
+				
+				DBUtils.insertHotItemInfo2DB_History(getApplicationContext(),
+						info, userId, database);
+			}
+			
+		}else {// 如果网上此用户没有任何收藏,但是数据库中有相应用户数据，清空掉此用户数据
+
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+
+				database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+						selectionArgs);
+			}
+		}
+		
+		cursor_proId.close();
+		helper.close();
+		
+	}
+
+	// 网上用户id数据和本地用户id数据进行比较
+	// 以网上数据为标准，如果本地用户id数据多余的就删除，不存在的就进行添加
+	private void compareUsrFav4DB(List<HotItemInfo> list, String userId) {
+
+		if (list == null) {
+
+			return;
+		}
+
+		boolean isUpdateThisTime = false;// 本次是否有收藏更新
+
+		String selection = UserShouCang.USER_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = { userId };
+
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+
+		String[] columns = { UserShouCang.PRO_ID, UserShouCang.PRO_TYPE,
+				UserShouCang.CUR_EPISODE };// 返回影片id 类型和当前更新集数
+		Cursor cursor_proId = database.query(
+				TvDatabaseHelper.ZHUIJU_TABLE_NAME, columns, selection,
+				selectionArgs, null, null, null);
+
+		if (list.size() > 0) {// 当用户有收藏时
+
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+
+				List<HotItemInfo> dbList = new ArrayList<HotItemInfo>();// 数据库list，只取其中id、type、cur_episode
+
+				while (cursor_proId.moveToNext()) {
+
+					int indexId = cursor_proId
+							.getColumnIndex(UserShouCang.PRO_ID);
+					int indexType = cursor_proId
+							.getColumnIndex(UserShouCang.PRO_TYPE);
+					int indexCurEpisode = cursor_proId
+							.getColumnIndex(UserShouCang.CUR_EPISODE);
+
+					HotItemInfo info = new HotItemInfo();
+
+					if (indexId != -1) {
+
+						Log.i(TAG,
+								"compareUsrFav4DB--->:pro_id"
+										+ cursor_proId.getString(indexId));
+						info.prod_id = cursor_proId.getString(indexId);// 把用户id信息影片id存储到字符串中
+						info.prod_type = cursor_proId.getString(indexType);
+						info.cur_episode = cursor_proId
+								.getString(indexCurEpisode);
+
+					}
+
+					dbList.add(info);
+				}
+
+				for (int i = 0; i < dbList.size(); i++)
+					Log.i(TAG, "db ids---->" + dbList.get(i).prod_id);
+
+				for (int i = 0; i < list.size(); i++)
+					Log.i(TAG, "netWork ids---->" + list.get(i).prod_id);
+
+				// 以网络的数据为标准 A 数据库为B
+				// 相同list集合 network
+				List<HotItemInfo> sameList4NetWork = UtilTools
+						.sameList4NetWork(list, dbList);
+				// 相同list集合 network
+				List<HotItemInfo> sameList4DB = UtilTools.sameList4DB(
+						list, dbList);
+				// 不同数据集合 network
+				List<HotItemInfo> differentList = UtilTools
+						.differentList4NetWork(list, dbList);
+				Log.i(TAG, "differentList---->" + differentList.size());
+
+				// 首先数据库数据全部改为旧数据
+				ContentValues contentValues = new ContentValues();
+				contentValues.put(UserShouCang.IS_NEW, DataBaseItems.OLD);
+				database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME,
+						contentValues, selection, selectionArgs);
+
+				// A与B相同的信息，数据更新为新的
+				for (int i = 0; i < sameList4NetWork.size(); i++) {
+
+					ContentValues tempValues = new ContentValues();
+					tempValues.put(UserShouCang.IS_NEW, DataBaseItems.NEW);
+					String tempSelection = UserShouCang.PRO_ID + "=? and "
+							+ UserShouCang.USER_ID + "=?";
+					String[] tempselectionArgs = {sameList4NetWork.get(i).prod_id, userId };
+
+					// A与B有相同数据，比较其cur_episode，如果A中不等于B中数据，把IS_UPDATE改为new
+					String type = sameList4NetWork.get(i).prod_type;
+					if (type != null) {
+						// 如果相同数据有电视剧、动漫和综艺类型
+						if (type.equals(BangDanConstant.TV_TYPE)
+								|| type.equals(BangDanConstant.DONGMAN_TYPE)
+								|| type.equals(BangDanConstant.ZONGYI_TYPE)) {
+
+							if (!sameList4NetWork.get(i).cur_episode
+									.equals(sameList4DB.get(i).cur_episode)) {
+
+								DBUtils.updateHotItemInfo2DB(
+										getApplicationContext(),
+										sameList4NetWork.get(i), userId,
+										database);
+								isUpdateThisTime = true;
+							}
+
+						}
+					}
+					database.update(TvDatabaseHelper.ZHUIJU_TABLE_NAME,
+							tempValues, tempSelection, tempselectionArgs);
+				}
+
+				// 插入A不同的数据
+				for (int i = 0; i < differentList.size(); i++) {
+
+					HotItemInfo info = differentList.get(i);
+
+					DBUtils.insertHotItemInfo2DB(
+							getApplicationContext(), info, userId, database);
+				}
+
+				// 删除掉旧的数据 通过新旧数据标记来删除
+				String deleteSelection = UserShouCang.IS_NEW + "=? and "
+						+ UserShouCang.USER_ID + "=?";
+				String[] deleteselectionArgs = { DataBaseItems.OLD + "", userId };
+				database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME,
+						deleteSelection, deleteselectionArgs);
+
+			} else {// 数据库没有数据
+				// 把下载的数据插入到数据库
+				for (HotItemInfo info : list) {
+
+					DBUtils.insertHotItemInfo2DB(
+							getApplicationContext(), info, userId, database);
+				}
+			}
+
+		} else {// 如果网上此用户没有任何收藏,但是数据库中有相应用户数据，清空掉此用户数据
+
+			if (cursor_proId != null && cursor_proId.getCount() > 0) {// 数据库有数据
+
+				database.delete(TvDatabaseHelper.ZHUIJU_TABLE_NAME, selection,
+						selectionArgs);
+			}
+		}
+
+		cursor_proId.close();// 关闭
+		helper.closeDatabase();// 关闭数据库
+
+		Log.i(TAG, "isUpdateThisTime--->" + isUpdateThisTime);
+
+		// 本次是否有收藏更新成功
+		if (isUpdateThisTime) {// 如果成功更新
+
+			boolean is48TimeClock = UtilTools
+					.is48TimeClock(getApplicationContext());// 是否开启闹钟
+
+			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+			long time =System.currentTimeMillis()+ 48 * 60 * 60 * 1000;//教训
+			// long time = 1000;
+
+			PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent(
+					this, AlarmBroadcastReceiver.class),
+					Intent.FLAG_ACTIVITY_NEW_TASK);
+			am.set(AlarmManager.RTC_WAKEUP, time, pi);
+			if (!is48TimeClock) {// 如果闹钟没有开启，存储开启状态
+
+				UtilTools.set48TimeClock(getApplicationContext(), true);
+			}
+		}
+
+		UtilTools.setCurrentUserId(getApplicationContext(), userId);
+
+	}
+
+//	class CheckPlayUrl implements Runnable {
+//
+//		@Override
+//		public void run() {
+//			// TODO Auto-generated method stub
+//
+//			for (int i = 0; i < hot_list.size(); i++) {
+//				HotItemInfo info = hot_list.get(i);
+//				if (info.type > 0) {
+//					List<URLS_INDEX> playUrls = new ArrayList<URLS_INDEX>();
+//					for (int j = 0; j < info.play_urls.length; j++) {
+//						for (int k = 0; k < info.play_urls[j].urls.length; k++) {
+//							URLS_INDEX url_index = new URLS_INDEX();
+//							url_index.url = info.play_urls[j].urls[k].url;
+//							url_index.source_from = info.play_urls[j].source;
+//							if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[0])) {
+//								url_index.souces = 0;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[1])) {
+//								url_index.souces = 1;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[2])) {
+//								url_index.souces = 2;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[3])) {
+//								url_index.souces = 3;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[4])) {
+//								url_index.souces = 4;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[5])) {
+//								url_index.souces = 5;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[6])) {
+//								url_index.souces = 6;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[7])) {
+//								url_index.souces = 7;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[8])) {
+//								url_index.souces = 8;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[9])) {
+//								url_index.souces = 9;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[10])) {
+//								url_index.souces = 10;
+//							} else if (info.play_urls[j].source.trim()
+//									.equalsIgnoreCase(Constant.video_index[11])) {
+//								url_index.souces = 11;
+//							} else {
+//								url_index.souces = 12;
+//							}
+//							if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[1])) {
+//								url_index.defination = 1;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[0])) {
+//								url_index.defination = 2;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[2])) {
+//								url_index.defination = 3;
+//							} else if (info.play_urls[j].urls[k].type.trim()
+//									.equalsIgnoreCase(
+//											Constant.player_quality_index[3])) {
+//								url_index.defination = 4;
+//							} else {
+//								url_index.defination = 5;
+//							}
+//							playUrls.add(url_index);
+//						}
+//					}
+//
+//					if (playUrls.size() > 1) {
+//						Collections.sort(playUrls,
+//								new DefinationComparatorIndex());
+//						Collections.sort(playUrls, new SouceComparatorIndex1());
+//					}
+//					Log.d(TAG, "test------------------" + i
+//							+ "playUrls size = " + playUrls.size() + "name = "
+//							+ info.prod_name);
+//					for (int n = 0; info.video_url == null
+//							&& n < playUrls.size(); n++) {
+//						String url = playUrls.get(n).url;
+//						if (app.CheckUrl(url)) {
+//							Log.d(TAG, "url-------ok----->" + url);
+//							hot_list.get(i).video_url = url;
+//							hot_list.get(i).source = playUrls.get(n).source_from;
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//	}
 	/*
 	 * @remove banner
 	 */

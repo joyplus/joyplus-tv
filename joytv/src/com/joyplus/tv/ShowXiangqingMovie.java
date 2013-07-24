@@ -381,6 +381,15 @@ public class ShowXiangqingMovie extends Activity implements
 			isDing = true;
 			break;
 		case R.id.bt_xiangqing_xiai:
+			if (isXiai) {
+
+				cancelshoucang();
+
+			} else {
+
+				shoucang();
+
+			}
 
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
@@ -846,6 +855,13 @@ public class ShowXiangqingMovie extends Activity implements
 		super.onResume();
 
 		MobclickAgent.onResume(this);
+
+		if (app.getUserInfo() != null) {
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 
 	@Override
@@ -1031,6 +1047,72 @@ public class ShowXiangqingMovie extends Activity implements
 		TextView score;
 		ImageView image;
 		ImageView definition;
+	}
+
+	private void cancelshoucang() {
+
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/unfavority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "cancelshoucangResult");
+		aq.ajax(cb);
+	}
+
+	public void cancelshoucangResult(String url, JSONObject json,
+			AjaxStatus status) {
+
+		xiaiBt.setEnabled(true);
+
+		if (favNum - 1 >= 0) {
+
+			favNum--;
+			xiaiBt.setText((favNum) + "");
+			ItemStateUtils.shoucangButtonToNormalState(xiaiBt,
+					getApplicationContext());
+		}
+		isXiai = false;
+
+		if (json == null || json.equals(""))
+			return;
+
+		Log.d(TAG, "cancel:----->" + json.toString());
+	}
+
+	private void shoucang() {
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/favority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "shoucangResult");
+		aq.ajax(cb);
+	}
+
+	public void shoucangResult(String url, JSONObject json, AjaxStatus status) {
+		xiaiBt.setEnabled(true);
+		favNum++;
+
+		xiaiBt.setText(favNum + "");
+		ItemStateUtils.shoucangButtonToFocusState(xiaiBt,
+				getApplicationContext());
+		isXiai = true;
+
+		if (json == null || json.equals(""))
+			return;
+
+		Log.d(TAG, "shoucangResult:----->" + json.toString());
 	}
 
 	private void dingService() {

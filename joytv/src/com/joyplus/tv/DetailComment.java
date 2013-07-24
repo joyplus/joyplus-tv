@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joyplus.tv.Adapters.DetailCommentListData;
 import com.joyplus.tv.Service.Return.ReturnProgramReviews;
-import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class DetailComment extends Activity implements
@@ -193,6 +192,12 @@ public class DetailComment extends Activity implements
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 		MobclickAgent.onResume(this);
 	}
 

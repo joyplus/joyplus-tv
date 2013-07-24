@@ -39,6 +39,7 @@ import android.media.MediaPlayer;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -70,11 +71,15 @@ import com.joyplus.adkey.Ad;
 import com.joyplus.adkey.AdListener;
 import com.joyplus.adkey.banner.AdView;
 import com.joyplus.tv.Service.Return.ReturnProgramView;
+import com.joyplus.tv.database.TvDatabaseHelper;
 import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.entity.URLS_INDEX;
 import com.joyplus.tv.ui.ArcView;
 import com.joyplus.tv.utils.BangDanConstant;
+import com.joyplus.tv.utils.DBUtils;
+import com.joyplus.tv.utils.DataBaseItems.UserHistory;
+import com.joyplus.tv.utils.DataBaseItems.UserShouCang;
 import com.joyplus.tv.utils.DefinationComparatorIndex;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
@@ -414,6 +419,30 @@ public class VideoPlayerJPActivity extends Activity implements
 				getProgramViewDetailServiceData();
 			}
 		}
+		
+		Log.d(TAG, "defination----->" + mDefination);
+		if(lastTime<=0){
+			String lastTimeStr = DBUtils.getDuartion4HistoryDB(
+					getApplicationContext(),
+					UtilTools.getCurrentUserId(getApplicationContext()), mProd_id,mProd_sub_name);
+			Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->lastTimeStr:" + lastTimeStr);
+
+			if (lastTimeStr != null && !lastTimeStr.equals("")) {
+
+				try {
+					long tempTime = Integer.valueOf(lastTimeStr);
+					Log.i(TAG, "DBUtils.getDuartion4HistoryDB-->time:" + tempTime);
+					if (tempTime != 0) {
+
+						lastTime = tempTime * 1000;
+					}
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
 	}
 
 	private Handler mHandler = new Handler() {
@@ -472,6 +501,8 @@ public class VideoPlayerJPActivity extends Activity implements
 						if(!VideoPlayerJPActivity.this.isFinishing()){
 							showDialog(0);
 							
+							//所有url不能播放，向服务器传递-1
+							saveToServer(-1, 0);
 						}
 					}
 				}
@@ -1734,6 +1765,11 @@ public class VideoPlayerJPActivity extends Activity implements
 			long curretnPosition = mVideoView.getCurrentPosition();
 			Log.d(TAG, "duration ->" + duration);
 			Log.d(TAG, "curretnPosition ->" + curretnPosition);
+			if(duration-curretnPosition<10*1000){
+				saveToServer(duration / 1000, (duration / 1000) -10);
+			}else{
+				saveToServer(duration / 1000, curretnPosition / 1000);
+			}
 		}
 		super.onPause();
 	}
@@ -1757,6 +1793,72 @@ public class VideoPlayerJPActivity extends Activity implements
 			finish();
 		}
 		super.onStop();
+	}
+
+	public void saveToServer(long duration, long playBackTime) {
+		String url = Constant.BASE_URL + "program/play";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("app_key", Constant.APPKEY);// required string
+		params.put("prod_id", mProd_id);
+		params.put("prod_name", mProd_name);// required
+		params.put("prod_subname", mProd_sub_name);
+		params.put("prod_type", mProd_type);// required int 视频类别
+		params.put("play_type", "1");
+		params.put("playback_time", playBackTime);// _time required int
+		params.put("duration", duration);// required int 视频时长， 单位：秒
+		params.put("video_url", currentPlayUrl);// required
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "CallProgramPlayResult");
+		aq.ajax(cb);
+
+		// DB操作，把存储到服务器的数据保存到数据库
+		TvDatabaseHelper helper = TvDatabaseHelper
+				.newTvDatabaseHelper(getApplicationContext());
+		SQLiteDatabase database = helper.getWritableDatabase();// 获取写db
+
+		String selection = UserShouCang.USER_ID + "=? and "
+				+ UserHistory.PRO_ID + "=?";// 通过用户id，找到相应信息
+		String[] selectionArgs = {
+				UtilTools.getCurrentUserId(getApplicationContext()), mProd_id };
+
+		database.delete(TvDatabaseHelper.HISTORY_TABLE_NAME, selection,
+				selectionArgs);
+
+		HotItemInfo info = new HotItemInfo();
+		info.prod_type = mProd_type + "";
+		info.prod_name = mProd_name;
+
+		info.prod_subname = mProd_sub_name;
+		info.prod_id = mProd_id;
+		info.play_type = "1";
+		info.playback_time = playBackTime + "";
+		info.video_url = currentPlayUrl;
+		info.duration = duration + "";
+
+		DBUtils.insertHotItemInfo2DB_History(getApplicationContext(), info,
+				UtilTools.getCurrentUserId(getApplicationContext()), database);
+
+		helper.closeDatabase();
+		
+		//发送更新最新记录广播
+		app.set_ReturnProgramView(m_ReturnProgramView);
+		Intent historyIntent  = new Intent(UtilTools.ACTION_PLAY_END_HISTORY);
+		historyIntent.putExtra("prod_id", mProd_id);
+		historyIntent.putExtra("prod_sub_name", mProd_sub_name);
+		historyIntent.putExtra("prod_type", mProd_type);
+		historyIntent.putExtra("time", playBackTime);
+		sendBroadcast(historyIntent);
+		
+		Intent mainIntent  = new Intent(UtilTools.ACTION_PLAY_END_MAIN);
+		mainIntent.putExtra("prod_id", mProd_id);
+		mainIntent.putExtra("prod_sub_name", mProd_sub_name);
+		mainIntent.putExtra("prod_type", mProd_type);
+		mainIntent.putExtra("time", playBackTime);
+		sendBroadcast(mainIntent);
+		
 	}
 	
 	private void setResult2Xiangqing() {

@@ -5,7 +5,11 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -17,10 +21,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joyplus.adkey.Util;
+import com.joyplus.tv.App;
+import com.joyplus.tv.Constant;
+import com.joyplus.tv.R;
 import com.joyplus.tv.Service.Return.ReturnTVBangDanList;
 import com.joyplus.tv.Service.Return.ReturnTops;
 import com.joyplus.tv.Service.Return.ReturnUserFavorities;
@@ -39,6 +50,80 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 	public static final String TV_SETTING_XML = "tv_setting_xml";
 	public static final String TV_ADKEY_CONFIG_XML = "tv_adkey_config_xml";
 
+	/**
+	 * 用来统计用户点击播放视屏后正常跳转的次数 有可能跳转到播放器，也有可能跳转到浏览器
+	 * 
+	 * 数据从服务器上获取
+	 * 
+	 * @param aq
+	 * @param prod_id
+	 * @param prod_name
+	 * @param prod_subname
+	 * @param pro_type
+	 */
+	public static void StatisticsClicksShow(AQuery aq, App app, String prod_id,
+			String prod_name, String prod_subname, int pro_type) {
+
+		String url = Constant.BASE_URL + "program/recordPlay";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		// params.put("client","android");
+		// params.put("version", "0.9.9");
+		// params.put("app_key", Constant.APPKEY);// required string //
+		// 申请应用时分配的AppKey。
+
+		params.put("prod_id", prod_id);// required string // 视频id
+
+		params.put("prod_name", prod_name);// required // string 视频名字
+
+		params.put("prod_subname", prod_subname);// required // string 视频的集数
+													// 电影的subname为空
+
+		params.put("prod_type", pro_type);// required int 视频类别
+											// 1：电影，2：电视剧，3：综艺，4：视频
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+		cb.params(params).url(url).type(JSONObject.class);
+
+		aq.ajax(cb);
+	}
+
+	public static int count = 0;
+
+	public static void simulateKey(final int KeyCode) {
+
+		count++;
+		if (count > 2) {
+			return;
+		}
+
+		new Thread() {
+
+			public void run() {
+
+				try {
+
+					Instrumentation inst = new Instrumentation();
+					// inst.sendKeySync(new KeyEvent(KeyEvent.ACTION_UP,
+					// KeyCode));
+
+					inst.sendKeyDownUpSync(KeyCode);
+					// handler.sendEmptyMessage(0X111);
+
+				} catch (Exception e) {
+
+					Log.e("Exception when sendKeyDownUpSync", e.toString());
+
+				}
+
+			}
+
+		}.start();
+
+	}
+
+	// public static isChineseString
 
 	public static ScaleAnimation getOutScaleAnimation() {
 
@@ -444,6 +529,37 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 		return list;
 	}
 
+	// public static List<MovieItemData> returnUserFavoritiesJson(String json)
+	// throws JsonParseException, JsonMappingException, IOException {
+	//
+	// if(json == null || json.equals("")) {
+	//
+	// return new ArrayList<MovieItemData>();
+	// }
+	// ObjectMapper mapper = new ObjectMapper();
+	//
+	// ReturnUserFavorities result = mapper.readValue(json.toString(),
+	// ReturnUserFavorities.class);
+	// List<MovieItemData> list = new ArrayList<MovieItemData>();
+	// for(int i=0; i<result.favorities.length; i++){
+	// MovieItemData movieItemData = new MovieItemData();
+	// movieItemData.setMovieID(result.favorities[i].content_id);
+	// movieItemData.setMovieName(result.favorities[i].content_name);
+	// movieItemData.setMovieProType(result.favorities[i].content_type);
+	// String bigPicUrl = result.favorities[i].big_content_pic_url;
+	// if(bigPicUrl == null || bigPicUrl.equals("")
+	// ||bigPicUrl.equals(EMPTY)) {
+	//
+	// bigPicUrl = result.favorities[i].content_pic_url;
+	// }
+	// movieItemData.setMoviePicUrl(bigPicUrl);
+	// movieItemData.setMovieScore(result.favorities[i].score);
+	// list.add(movieItemData);
+	// }
+	//
+	// return list;
+	// }
+
 	public static List<HotItemInfo> returnUserFavoritiesJson(String json)
 			throws JsonParseException, JsonMappingException, IOException {
 
@@ -778,6 +894,77 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 			return 0;
 		}
 	}
+
+	// public static String getTitleName(String str) {
+	//
+	//
+	// int index = str.indexOf("第");
+	//
+	// return str.substring(start)
+	// }
+
+	public static boolean is48TimeClock(Context context) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+
+		return sp.getBoolean("is48TimeClock", false);
+	}
+
+	public static void set48TimeClock(Context context, boolean is48TimeClock) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putBoolean("is48TimeClock", is48TimeClock);
+		editor.commit();
+	}
+
+	/**
+	 * 闹钟保存的id
+	 * 
+	 * @param context
+	 * @param userId
+	 */
+	public static void setCurrentUserId(Context context, String userId) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("currentUserId", userId);
+		editor.commit();
+	}
+
+	/**
+	 * 闹钟绑定的id
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static String getCurrentUserId(Context context) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+
+		return sp.getString("currentUserId", "");
+	}
+
+	public static void setCancelShoucangProId(Context context, String proId) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+		Editor editor = sp.edit();
+		editor.putString("cancelShoucangProId", proId);
+		editor.commit();
+	}
+
+	public static String getCancelShoucangProId(Context context) {
+
+		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
+				Context.MODE_PRIVATE);
+
+		return sp.getString("cancelShoucangProId", "");
+	}
 	
 	/**
 	 * 存储广告是否显示
@@ -799,23 +986,6 @@ public class UtilTools implements JieMianConstant, BangDanConstant {
 				Context.MODE_PRIVATE);
 		
 		return sp.getBoolean("isShowAd", false);
-	}
-	
-	public static void setIsJoyPlusApp(Context context,boolean isJoyPlusApp) {
-		
-		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
-				Context.MODE_PRIVATE);
-		Editor editor = sp.edit();
-		editor.putBoolean("isJoyPlusApp", isJoyPlusApp);
-		editor.commit();
-	}
-	
-	public static boolean getIsJoyPlusApp(Context context) {
-		
-		SharedPreferences sp = context.getSharedPreferences(TV_SETTING_XML,
-				Context.MODE_PRIVATE);
-		
-		return sp.getBoolean("isJoyPlusApp", true);
 	}
 	
 	public static void setDisclaimerVisible(Context context,boolean isDisclaimerVisible){

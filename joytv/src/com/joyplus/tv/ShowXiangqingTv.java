@@ -42,6 +42,7 @@ import com.joyplus.tv.entity.CurrentPlayDetailData;
 import com.joyplus.tv.entity.HotItemInfo;
 import com.joyplus.tv.ui.WaitingDialog;
 import com.joyplus.tv.utils.BangDanConstant;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.JieMianConstant;
 import com.joyplus.tv.utils.Log;
@@ -124,6 +125,12 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		showDefultDate();
 		initView();
 		showDialog(DIALOG_WAITING);
+		
+		//从DB文件中获取历史播放集数
+		historyPlayIndex4DB = DBUtils.
+				getHistoryPlayIndex4DB(getApplicationContext(),prod_id,BangDanConstant.TV_TYPE);
+		seletedButtonIndex = historyPlayIndex4DB;
+		Log.i(TAG, "onCreate--->historyPlayIndex4DB:" + historyPlayIndex4DB);
 		
 		getIsShoucangData();
 		getServiceDate();
@@ -501,6 +508,15 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			isDing = true;
 			break;
 		case R.id.bt_xiangqing_xiai:
+			if(isXiai) {
+				
+				cancelshoucang();
+				
+			} else {
+				
+				shoucang();
+
+			}
 
 			break;
 		case R.id.ll_xiangqing_bofang_gaoqing:
@@ -572,7 +588,36 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 				b.setTextColor(getResources().getColorStateList(R.color.tv_btn_text_color_selector_1));
 				b.setPadding(8, 0, 0, 0);
 			}
+			//从DB文件中获取历史播放集数
+			HotItemInfo info = DBUtils.
+					getHotItemInfo4DB_History(getApplicationContext(),
+							UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
+			if(info != null) {
+				
+//				int index = playData.CurrentIndex;
+				String prod_subName = info.prod_subname;
+				
+				if(prod_subName != null && !prod_subName.equals("")) {
+					
+					int tempIndex = -1;
+					try {
+						tempIndex = Integer.valueOf(prod_subName);
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					if(tempIndex > -1) {
+						
+						play(tempIndex);
+					}
+					
+				}else {
+					playFirst(0);
+				}
+			} else {
 				playFirst(0);
+			}
 
 		}else{
 			play(seletedButtonIndex-1);
@@ -1211,6 +1256,13 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 		super.onResume();
 		
 		MobclickAgent.onResume(this);
+		
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 	
 	@Override
@@ -1376,6 +1428,87 @@ public class ShowXiangqingTv extends Activity implements View.OnClickListener,
 			
 		}
 		
+	}
+	
+	private void cancelshoucang(){
+		
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/unfavority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "cancelshoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void cancelshoucangResult(String url, JSONObject json, AjaxStatus status){
+		
+		//闹钟开启的情况下，取消收藏删除数据库中相关数据
+		if(UtilTools.is48TimeClock(getApplicationContext()))
+			DBUtils.deleteData4ProId(getApplicationContext(), 
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id);
+		
+		xiaiBt.setEnabled(true);
+		
+		
+			if(favNum - 1 >=0) {
+				
+				favNum --;
+				xiaiBt.setText((favNum) + "");
+				ItemStateUtils.shoucangButtonToNormalState(xiaiBt, getApplicationContext());
+			}
+		isXiai = false;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
+		Log.d(TAG, "cancel:----->"+json.toString());
+	}
+	
+	private void shoucang(){
+		xiaiBt.setEnabled(false);
+		String url = Constant.BASE_URL + "program/favority";
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("prod_id", prod_id);
+
+		AjaxCallback<JSONObject> cb = new AjaxCallback<JSONObject>();
+		cb.SetHeader(app.getHeaders());
+
+		cb.params(params).url(url).type(JSONObject.class)
+				.weakHandler(this, "shoucangResult");
+		aq.ajax(cb);
+	}
+	
+	public void shoucangResult(String url, JSONObject json, AjaxStatus status){
+		xiaiBt.setEnabled(true);
+		favNum ++;
+		
+		xiaiBt.setText(favNum + "");
+		ItemStateUtils.shoucangButtonToFocusState(xiaiBt, getApplicationContext());
+		isXiai = true;
+		
+		if(json == null || json.equals("")) 
+			return;
+		
+		Log.d(TAG, "shoucangResult:----->" + json.toString());
+		
+		HotItemInfo info = new HotItemInfo();
+		info.prod_id = prod_id;
+		info.prod_name = date.tv.name;
+		info.score = date.tv.score;
+		info.prod_pic_url = pic_url;
+		info.cur_episode = date.tv.cur_episode;
+		info.max_episode = date.tv.max_episode;
+		info.prod_type = BangDanConstant.TV_TYPE;
+		
+		DBUtils.insertOneHotItemInfo2DB(getApplicationContext(),
+				UtilTools.getCurrentUserId(getApplicationContext()), prod_id, info);
 	}
 	
 	private void dingService(){

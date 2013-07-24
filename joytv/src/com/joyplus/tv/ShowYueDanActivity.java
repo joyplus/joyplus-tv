@@ -240,6 +240,13 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 		super.onResume();
 		
 		MobclickAgent.onResume(this);
+		
+		if(app.getUserInfo()!=null){
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
 	}
 	
 	@Override
@@ -1052,9 +1059,12 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 
 		if(v.getId() == R.id.bt_zuijinguankan) {
 			
+			startActivity(new Intent(this, HistoryActivity.class));
+			
 			return;
 		} else if( v.getId() == R.id.bt_zhuijushoucang) {
 			
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 			return;
 		}
 
@@ -1094,8 +1104,10 @@ public class ShowYueDanActivity extends AbstractShowActivity {
 			}
 			break;
 		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
 			break;
 		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 			break;
 		default:
 			break;

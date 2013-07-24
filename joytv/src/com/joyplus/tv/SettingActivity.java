@@ -1,25 +1,20 @@
 package com.joyplus.tv;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidquery.AQuery;
-import com.joyplus.tv.ui.UserInfo;
-import com.joyplus.tv.utils.UtilTools;
 import com.umeng.analytics.MobclickAgent;
 
 public class SettingActivity extends Activity implements OnClickListener {
@@ -32,6 +27,17 @@ public class SettingActivity extends Activity implements OnClickListener {
 	private TextView aboutLayout,declarationLayout,faqLayout;
 	private App app;
 	private AQuery aq;
+	private BroadcastReceiver receiver = new BroadcastReceiver(){
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(Main1.ACTION_USERUPDATE.equals(intent.getAction())){
+				updateUser();
+			}
+		}
+		
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 		aboutLayout.setOnClickListener(this);
 		declarationLayout.setOnClickListener(this);
 		faqLayout.setOnClickListener(this);
+		IntentFilter filter = new IntentFilter(Main1.ACTION_USERUPDATE);
+		registerReceiver(receiver, filter);
 	}
 	@Override
 	public void onClick(View v) {
@@ -68,6 +76,11 @@ public class SettingActivity extends Activity implements OnClickListener {
 			startActivity(intentFaq);
 			break;
 		case R.id.bandLayout:
+			if(!app.getUserInfo().getUserId().equals(app.getUserData("userId"))){
+
+//				unbandUserId();
+				showDialog(SHOW_DIALOG_UNBAND);
+			}
 			break;
 
 		default:
@@ -97,6 +110,8 @@ public class SettingActivity extends Activity implements OnClickListener {
 		super.onResume();
 		
 		MobclickAgent.onResume(this);
+		
+		updateUser();
 	}
 	
 	@Override
@@ -107,12 +122,32 @@ public class SettingActivity extends Activity implements OnClickListener {
 		MobclickAgent.onPause(this);
 	}
 	
+	private void updateUser(){
+		if(app.getUserInfo() == null){
+			return;
+		}
+		aq.id(R.id.iv_head_user_icon).image(
+				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+				R.drawable.avatar_defult);
+		aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		aq.id(R.id.user_avatar).image(
+				app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+				R.drawable.avatar_defult);
+		aq.id(R.id.user_name).text(app.getUserInfo().getUserName());
+		if(app.getUserInfo().getUserId().equals(app.getUserData("userId"))){
+			aq.id(R.id.user_notice).text("本机用户");
+		}else{
+			aq.id(R.id.user_notice).text("点击解除绑定");
+		}
+	}
+	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		if(aq!=null){
 			aq.dismiss();
 		}
+		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 }

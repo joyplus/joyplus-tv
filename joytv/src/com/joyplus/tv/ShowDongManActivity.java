@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.SparseArray;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,10 +41,11 @@ import com.joyplus.tv.ui.MyMovieGridView;
 import com.joyplus.tv.ui.NavigateView;
 import com.joyplus.tv.ui.NavigateView.OnResultListener;
 import com.joyplus.tv.ui.WaitingDialog;
+import com.joyplus.tv.utils.DBUtils;
 import com.joyplus.tv.utils.ItemStateUtils;
 import com.joyplus.tv.utils.Log;
-import com.joyplus.tv.utils.URLUtils;
 import com.joyplus.tv.utils.UtilTools;
+import com.joyplus.tv.utils.URLUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class ShowDongManActivity extends AbstractShowActivity {
@@ -122,6 +124,25 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		app = (App) getApplication();
 		aq = new AQuery(this);
+
+		// 本地收藏，有没有更新
+		String userId = null;
+		if (app.getUserInfo() != null) {
+
+			if (app.getUserInfo().getUserId() != null) {
+
+				userId = app.getUserInfo().getUserId();
+			}
+		} else {
+
+			userId = UtilTools.getCurrentUserId(getApplicationContext());
+		}
+
+		if (userId != null) {
+
+			shoucangList = DBUtils.getList4DB(getApplicationContext(), userId,
+					DONGMAN_TYPE);
+		}
 
 		if (shoucangList != null && !shoucangList.isEmpty()) {
 
@@ -319,6 +340,15 @@ public class ShowDongManActivity extends AbstractShowActivity {
 		super.onResume();
 
 		MobclickAgent.onResume(this);
+
+		if (app.getUserInfo() != null) {
+			aq.id(R.id.iv_head_user_icon).image(
+					app.getUserInfo().getUserAvatarUrl(), false, true, 0,
+					R.drawable.avatar_defult);
+			aq.id(R.id.tv_head_user_name).text(app.getUserInfo().getUserName());
+		}
+
+		// 只有在重新进来的时候刷新数据
 	}
 
 	@Override
@@ -1787,9 +1817,12 @@ public class ShowDongManActivity extends AbstractShowActivity {
 
 		if (v.getId() == R.id.bt_zuijinguankan) {
 
+			startActivity(new Intent(this, HistoryActivity.class));
+
 			return;
 		} else if (v.getId() == R.id.bt_zhuijushoucang) {
 
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 			return;
 		}
 
@@ -1900,8 +1933,10 @@ public class ShowDongManActivity extends AbstractShowActivity {
 			}
 			break;
 		case R.id.bt_zuijinguankan:
+			startActivity(new Intent(this, HistoryActivity.class));
 			break;
 		case R.id.bt_zhuijushoucang:
+			startActivity(new Intent(this, ShowShoucangHistoryActivity.class));
 			break;
 		default:
 			break;

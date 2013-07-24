@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#08111a"
+    android:paddingTop="15dp">
+	    <include
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginLeft="30dp"
+        layout="@layout/show_head" />
+	    <LinearLayout android:layout_width="fill_parent"
+	        android:orientation="vertical"
+	        android:layout_height="fill_parent">
+	<TextView android:layout_width="fill_parent"
+	    android:layout_height="65dp"/>
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <LinearLayout android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal">
+            <LinearLayout android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1">
+                
+            </LinearLayout>
+            <LinearLayout android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:background="@drawable/menubg">
+                <TextView android:layout_width="wrap_content"
+				    android:layout_height="45dp"
+				    android:paddingRight="5dp"
+				    android:paddingLeft="14dp"
+				    android:gravity="center_vertical|left"
+				    android:id="@+id/title_text"
+				    android:textSize="30dp"
+				    android:text="最近观看"
+				    android:textColor="@color/common_title_selected"
+				    />
+                <TextView android:layout_width="fill_parent"
+				    android:layout_height="45dp"
+				    android:paddingRight="15dp"
+				    android:gravity="center_vertical|right"
+				    android:id="@+id/notice_text"
+				    android:textSize="20dp"
+				    android:textColor="@color/common_title_selected"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <LinearLayout android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:paddingRight="14dp"
+                android:paddingLeft="20dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:text="全部"
+                    android:id="@+id/fenlei_all"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="5dp"
+                    android:gravity="center_vertical|right"
+                    android:background="@drawable/text_drawable_selector"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_color_selector"/>
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical|right"
+                    android:text="电影"
+                    android:id="@+id/fenlei_movie"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/text_drawable_selector"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_color_selector"/>
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical|right"
+                    android:text="电视剧"
+                    android:id="@+id/fenlei_tv"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/text_drawable_selector"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_color_selector"/>
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical|right"
+                    android:text="动漫"
+                    android:id="@+id/fenlei_dongman"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/text_drawable_selector"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_color_selector"/>
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical|right"
+                    android:text="综艺"
+                    android:id="@+id/fenlei_zongyi"
+                    android:layout_marginTop="10dp"
+                    android:paddingRight="5dp"
+                    android:background="@drawable/text_drawable_selector"
+                    android:textSize="20dp"
+                    android:textColor="@color/text_color_selector"/>
+            </LinearLayout>
+            <LinearLayout android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:layout_weight="4">
+                <ListView android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/history_list"
+                    android:divider="@drawable/line"
+                    android:dividerHeight="1px"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="10dp">
+                </ListView>
+            </LinearLayout>
+            <LinearLayout 
+                android:layout_height="fill_parent"
+                android:layout_width="0dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="10dp"
+                android:layout_weight="1">
+                <Button android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_delete_selector"
+                    android:textColor="@color/white"
+                    android:id="@+id/delete_btn"
+                    android:textSize="18dp"
+                    android:text="清 空 记 录"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+</RelativeLayout>
