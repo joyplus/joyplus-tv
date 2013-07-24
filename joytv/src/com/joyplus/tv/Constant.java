@@ -12,7 +12,7 @@ public class Constant {
 	public static String PLAYER_ADV_PUBLISHERID = "ad51ed4ef2";
 
 	
-	public static String BASE_URL = "http://172.16.31.64/joyplus/joyplus-social/index.php/";
+	public static String BASE_URL = "localhost/joyplus-social/index.php/";
 	public static String APPKEY = "72dbdcec3b85d5d21c6777c696bc6aa3";
 
 	public static final String VIDEOPLAYERCMD = "com.joyplus.tv.videoservicecommand";
