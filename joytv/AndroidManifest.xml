@@ -334,6 +334,18 @@
                 <action android:name="com.example.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
+        <activity
+            android:name=".HistoryActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity
+            android:name=".ShowShoucangHistoryActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
     </application>
 
 </manifest>
